@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cfdi:Comprobante 
+    xmlns:cfdi="http://www.sat.gob.mx/cfd/4" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd"
+    Version="4.0"
+    Serie="A"
+    Folio="000002"
+    Fecha="2025-11-17T02:25:11.091Z"
+    Sello="oQ3xG8fKLm9pR2vX5tYhN1jC7wZ4sD6eF8aH0bI3kM5nO7pR9qS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2=="
+    FormaPago="04"
+    NoCertificado="30001000000500003315702"
+    Certificado="MIIGTzCCBDegAwIBAgIUMzAwMDEwMDAwMDA1MDAwMDMzMTU3MDIwDQYJKoZIhvcNAQELBQAwggGEMSAwHgYDVQQDDBdBVVRPUklEQUQgQ0VSVElGSUNBRE9SQTEuMCwGA1UECgwlU0VSVklDSU8gREUgQURNSU5JU1RSQUNJT04gVFJJQlVUQVJJQTEYMBYGA1UECwwPRElWSVNJT04gREUgU0FUMRcwFQYDVQQJDA5BViBISURBTEdPIDc3MQ4wDAYDVQQRDAUwNjMwMDELMAkGA1UEBhMCTVgxGTAXBgNVBAgMEENJVURBRCBERSBNRVhJQ08xETAPBgNVBAcMCENPWU9BQ0FOMRUwEwYJKoZIhvcNAQkBFgZzYXRAbXgwHhcNMjQwMTAxMDAwMDAwWhcNMjgxMjMxMjM1OTU5WjCBvDEmMCQGA1UEAxMdVkVMSU9OIERJR0lUQUwgU0EgREUgQ1YxJjAkBgNVBAoTHVZFTElPTiBESUdJVEFMIFNBIERFIENWMR4wHAYDVQQFExUgLyBYWFhYNjAxMDFYWFhYWFhYWFhYMA0GCSqGSIb3DQEBAQUAA4IBAQCaR8..."
+    CondicionesDePago="PAGO EN UNA SOLA EXHIBICION"
+    SubTotal="0.86"
+    Descuento="0.00"
+    Moneda="MXN"
+    TipoCambio="1"
+    Total="1.00"
+    TipoDeComprobante="I"
+    Exportacion="01"
+    MetodoPago="PUE"
+    LugarExpedicion="62744">
+    
+    <cfdi:Emisor 
+        Rfc="VEL010101AAA" 
+        Nombre="VELION DIGITAL SA DE CV" 
+        RegimenFiscal="601"/>
+    
+    <cfdi:Receptor 
+        Rfc="SAPJ0408258L6" 
+        Nombre="Sánchez Pérez Jair Emiliano" 
+        DomicilioFiscalReceptor="62744"
+        RegimenFiscalReceptor="610"
+        UsoCFDI="I05"/>
+    
+    <cfdi:Conceptos>
+        <cfdi:Concepto 
+            ClaveProdServ="81161701" 
+            NoIdentificacion="VELION-PREMIUM-MES"
+            Cantidad="1" 
+            ClaveUnidad="E48" 
+            Unidad="Servicio"
+            Descripcion="Suscripción mensual Velion Premium - Acceso completo a plataforma de streaming con contenido exclusivo. Periodo: 16/11/2025 - 16/12/2025" 
+            ValorUnitario="0.86" 
+            Importe="0.86"
+            Descuento="0.00"
+            ObjetoImp="02">
+            <cfdi:Impuestos>
+                <cfdi:Traslados>
+                    <cfdi:Traslado 
+                        Base="0.86" 
+                        Impuesto="002" 
+                        TipoFactor="Tasa" 
+                        TasaOCuota="0.160000" 
+                        Importe="0.14"/>
+                </cfdi:Traslados>
+            </cfdi:Impuestos>
+        </cfdi:Concepto>
+    </cfdi:Conceptos>
+    
+    <cfdi:Impuestos 
+        TotalImpuestosTrasladados="0.14">
+        <cfdi:Traslados>
+            <cfdi:Traslado 
+                Base="0.86" 
+                Impuesto="002" 
+                TipoFactor="Tasa" 
+                TasaOCuota="0.160000" 
+                Importe="0.14"/>
+        </cfdi:Traslados>
+    </cfdi:Impuestos>
+    
+    <cfdi:Complemento>
+        <tfd:TimbreFiscalDigital 
+            xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" 
+            xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd"
+            Version="1.1"
+            UUID="54B2D155-29A9-4864-8732-3C6463652A89"
+            FechaTimbrado="2025-11-17T02:25:11.091Z"
+            RfcProvCertif="SPR190613I52"
+            SelloCFD="oQ3xG8fKLm9pR2vX5tYhN1jC7wZ4sD6eF8aH0bI3kM5nO7pR9qS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2=="
+            NoCertificadoSAT="00001000000504465028"
+            SelloSAT="Zj8Hn7TP1qW3xV5zA7bD9fH1kN3pS5uW7yB9dF1hJ3mP5rT7vX9aC1eG3iK5nQ7sU9wY1cE3gI5lO7qT9vX1bD3fH5jM7pS9uW1yB3dF5hJ7mP9rT1vX3aC5eG7iK9nQ1sU3wY5cE7gI9lO1qT3vX5bD7fH9jM1pS3uW5yB7dF9hJ1mP3rT5vX7aC9eG1iK3nQ5sU7wY9cE1gI3lO5qT7vX9bD1fH3jM5pS7uW9yB1dF3hJ5mP7rT9vX1aC3eG5iK7nQ9sU1wY3cE5gI7lO9qT1vX3bD5fH7jM9pS1uW3yB5dF7hJ9mP1rT3vX5aC7eG9iK1nQ3sU5wY7cE9gI1lO3qT5vX7bD9fH1jM3pS5uW7yB9dF1hJ3mP5rT7vX9aC1eG3iK5nQ7sU9wY1cE3gI5lO7qT9vX1bD3fH5jM7pS9uW1yB3dF5hJ7mP9rT1vX3aC5eG7iK9nQ1sU3wY5cE7gI9lO1qT3vX5bD7fH9jM1pS3uW5yB7dF9hJ1mP3rT5vX7aC9eG1iK3nQ5sU7wY9cE1gI3lO5qT7vX9bD1fH3jM5pS7uW9yB1dF3hJ5mP7rT9vX1aC3eG5iK7nQ9sU1wY3cE5gI7lO9qT1vX3bD5fH7jM9pS1uW3yB5dF7hJ9mP1rT3vX5aC7eG9iK1nQ3sU5wY7cE9gI1lO3qT5vX7bD9fH1jM3pS5uW7yB9dF1hJ3mP5rT7vX9aC1eG3iK5nQ7sU9wY1cE3gI5lO7qT9vX1bD3fH5jM7pS9uW1yB3dF5hJ7mP9rT1vX3aC5eG7iK9nQ1sU3wY5cE7gI9lO1qT3vX5bD7fH9jM1pS3uW5yB7dF9hJ1mP3rT5vX7aC9eG1="/>
+    </cfdi:Complemento>
+</cfdi:Comprobante>

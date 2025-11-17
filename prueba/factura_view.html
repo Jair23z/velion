@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Factura CFDI 4.0 - Vista Completa</title>
+<style>
+  body { font-family: "Segoe UI", Roboto, Arial, sans-serif; background:#f5f7fb; margin:24px; color:#222; }
+  .card { max-width:900px; margin:0 auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 6px 18px rgba(20,30,60,0.08); }
+  header { display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #e6eef8; padding-bottom:12px; }
+  header h1 { margin:0; color:#d92b3a; font-size:1.4rem; }
+  .emisor-receptor { display:flex; gap:20px; margin-top:16px; }
+  .box { flex:1; background:#fbfcff; padding:12px; border-radius:8px; border:1px solid #eef3ff; }
+  table { width:100%; border-collapse:collapse; margin-top:14px; font-size:0.9rem; }
+  th, td { padding:8px 6px; border:1px solid #e6eef8; text-align:left; }
+  th { background:#f0f7ff; color:#213a66; font-weight:600; }
+  tfoot td { font-weight:bold; background:#f7fbff; }
+  .right { text-align:right; }
+  .note { font-size:0.85rem; color:#666; margin-top:12px; padding:10px; background:#fffef0; border-left:3px solid #ffc107; }
+  .small { font-size:0.82rem; color:#555; }
+  .type { color:#999; font-size:0.75rem; font-style:italic; }
+  #qr { margin-top:15px; text-align:center; }
+  /* QR fijo en la esquina inferior derecha */
+  .qr-bottom { display:none; position:fixed; right:24px; bottom:24px; background:#fff; padding:10px; border-radius:8px; box-shadow:0 8px 20px rgba(20,30,60,0.12); z-index:1200; text-align:center; }
+  .qr-bottom .small { margin:0 0 6px 0; }
+  /* Badges para tipo de dato - sutiles y difuminados */
+  .badge { display:inline-block; padding:2px 6px; border-radius:999px; font-size:0.7rem; margin-left:6px; vertical-align:middle; opacity:0.5; }
+  .badge.simple { background:rgba(11,74,148,0.06); color:#0b4a94; border:1px solid rgba(11,74,148,0.10); }
+  .badge.complejo { background:rgba(138,90,0,0.04); color:#8a5a00; border:1px solid rgba(138,90,0,0.08); }
+  .badge.estandar { background:rgba(7,96,59,0.04); color:#07603b; border:1px solid rgba(7,96,59,0.08); }
+  .meta { font-size:0.8rem; color:#666; margin-top:4px; line-height:1.4; }
+  .section-title { font-size:1rem; font-weight:600; color:#213a66; margin-top:18px; margin-bottom:8px; border-bottom:1px solid #e6eef8; padding-bottom:4px; }
+  button { padding:8px 16px; margin-right:8px; border:1px solid #0b4a94; background:#eef6ff; color:#0b4a94; border-radius:6px; cursor:pointer; font-size:0.85rem; }
+  button:hover { background:#d2e8ff; }
+  .cadena { font-size:0.7rem; word-break:break-all; color:#888; margin-top:6px; }
+</style>
+</head>
+<body>
+  <div class="card" id="invoiceRoot">
+    <!-- Contenido generado dinámicamente -->
+  </div>
+
+  <!-- Contenedor QR fijo abajo a la derecha -->
+  <div id="qr-bottom" class="qr-bottom" aria-hidden="false"></div>
+
+  <!-- XML embebido -->
+  <script id="factura-xml" type="application/xml">
+<?xml version="1.0" encoding="UTF-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd"
+                  Version="4.0"
+                  Serie="A"
+                  Folio="12345"
+                  Fecha="2025-10-21T10:30:00"
+                  Sello="oQ3xG8fKLm9pR2vX5tYhN1jC7wZ4sD6eF8aH0bI3kM5nO7pR9qS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2=="
+                  FormaPago="03"
+                  NoCertificado="30001000000500003315702"
+                  Certificado="MIIGTzCCBDegAwIBAgIUMzAwMDEwMDAwMDA1MDAwMDMzMTU3MDIwDQYJKoZIhvcNAQELBQAwggGEMSAwHgYDVQQDDBdBVVRPUklEQUQgQ0VSVElGSUNBRE9SQTEuMCwGA1UECgwlU0VSVklDSU8gREUgQURNSU5JU1RSQUNJT04gVFJJQlVUQVJJQTEYMBYGA1UECwwPRElWSVNJT04gREUgU0FUMRcwFQYDVQQJDA5BViBISURBTEdPIDc3MQ4wDAYDVQQRDAUwNjMwMDELMAkGA1UEBhMCTVgxGTAXBgNVBAgMEENJVURBRCBERSBNRVhJQ08xETAPBgNVBAcMCENPWU9BQ0FOMRUwEwYJKoZIhvcNAQkBFgZzYXRAbXgwHhcNMjQwMTAxMDAwMDAwWhcNMjgxMjMxMjM1OTU5WjCBvDEmMCQGA1UEAxMdTkVURkxJWCBTRVJWSUNJT1MgREUgTUVYSUNPIFNBMSYwJAYDVQQpEx1ORVRGTEZYIFNFRVZJQ0lPUyBERSBNRVhJQ08gU0ExJjAkBgNVBAoTHU5FVEZMSVggU0VSVklDSU9TIERFIE1FWElDTyBTQTElMCMGA1UELRMcTkZYODQwMTAxQUIzIC8gWFhYWDYwMTAxWFhYMR4wHAYDVQQFExUgLyBYWFhYNjAxMDFYWFhYWFhYWFhYMA0GCSqGSIb3DQEBAQUABIIBAJqR8..."
+                  CondicionesDePago="PAGO EN UNA SOLA EXHIBICION"
+                  SubTotal="259.00"
+                  Descuento="0.00"
+                  Moneda="MXN"
+                  TipoCambio="1"
+                  Total="300.44"
+                  TipoDeComprobante="I"
+                  Exportacion="01"
+                  MetodoPago="PUE"
+                  LugarExpedicion="03810">
+  
+  <cfdi:Emisor Rfc="NFX840101AB3" 
+               Nombre="NETFLIX SERVICIOS DE MEXICO SA DE CV" 
+               RegimenFiscal="601"/>
+  
+  <cfdi:Receptor Rfc="PATJ840202XY1" 
+                 Nombre="JORGE ARIEL PADILLA TELLEZ" 
+                 DomicilioFiscalReceptor="03100"
+                 RegimenFiscalReceptor="605"
+                 UsoCFDI="G03"/>
+  
+  <cfdi:Conceptos>
+    <cfdi:Concepto ClaveProdServ="81161701" 
+                   NoIdentificacion="NETFLIX-STD-MES" 
+                   Cantidad="1" 
+                   ClaveUnidad="E48" 
+                   Unidad="Servicio" 
+                   Descripcion="Suscripción mensual Netflix Plan Estándar - Acceso a contenido en streaming con calidad HD, 2 pantallas simultáneas. Periodo: 01/10/2025 - 31/10/2025. Usuario: jorge.padilla@example.com" 
+                   ValorUnitario="259.00" 
+                   Importe="259.00" 
+                   Descuento="0.00"
+                   ObjetoImp="02">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="259.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="41.44"/>
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+  </cfdi:Conceptos>
+  
+  <cfdi:Impuestos TotalImpuestosTrasladados="41.44">
+    <cfdi:Traslados>
+      <cfdi:Traslado Base="259.00" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="41.44"/>
+    </cfdi:Traslados>
+  </cfdi:Impuestos>
+  
+  <cfdi:Complemento>
+    <tfd:TimbreFiscalDigital xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" 
+                             xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd"
+                             Version="1.1"
+                             UUID="A5F2B8C4-9D7E-4A3B-8C6D-1E2F3A4B5C6D"
+                             FechaTimbrado="2025-10-21T10:30:15"
+                             RfcProvCertif="SPR190613I52"
+                             SelloCFD="oQ3xG8fKLm9pR2vX5tYhN1jC7wZ4sD6eF8aH0bI3kM5nO7pR9qS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2=="
+                             NoCertificadoSAT="00001000000504465028"
+                             SelloSAT="Zj8Hn7TP1qW3xV5zA7bD9fH1kN3pS5uW7yB9dF1hJ3mP5rT7vX9aC1eG3iK5nQ7sU9wY1cE3gI5lO7qT9vX1bD3fH5jM7pS9uW1yB3dF5hJ7mP9rT1vX3aC5eG7iK9nQ1sU3wY5cE7gI9lO1qT3vX5bD7fH9jM1pS3uW5yB7dF9hJ1mP3rT5vX7aC9eG1iK3nQ5sU7wY9cE1gI3lO5qT7vX9bD1fH3jM5pS7uW9yB1dF3hJ5mP7rT9vX1aC3eG5iK7nQ9sU1wY3cE5gI7lO9qT1vX3bD5fH7jM9pS1uW3yB5dF7hJ9mP1rT3vX5aC7eG9iK1nQ3sU5wY7cE9gI1lO3qT5vX7bD9fH1jM3pS5uW7yB9dF1hJ3mP5rT7vX9aC1eG3iK5nQ7sU9wY1cE3gI5lO7qT9vX1bD3fH5jM7pS9uW1yB3dF5hJ7mP9rT1vX3aC5eG7iK9nQ1sU3wY5cE7gI9lO1qT3vX5bD7fH9jM1pS3uW5yB7dF9hJ1mP3rT5vX7aC9eG1iK3nQ5sU7wY9cE1gI3lO5qT7vX9bD1fH3jM5pS7uW9yB1dF3hJ5mP7rT9vX1aC3eG5iK7nQ9sU1wY3cE5gI7lO9qT1vX3bD5fH7jM9pS1uW3yB5dF7hJ9mP1rT3vX5aC7eG9iK1nQ3sU5wY7cE9gI1lO3qT5vX7bD9fH1jM3pS5uW7yB9dF1hJ3mP5rT7vX9aC1eG3iK5nQ7sU9wY1cE3gI5lO7qT9vX1bD3fH5jM7pS9uW1yB3dF5hJ7mP9rT1vX3aC5eG7iK9nQ1sU3wY5cE7gI9lO1qT3vX5bD7fH9jM1pS3uW5yB7dF9hJ1mP3rT5vX7aC9eG1="/>
+  </cfdi:Complemento>
+  
+</cfdi:Comprobante>
+  </script>
+
+  <!-- Librería para generar QR -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+<script>
+(function(){
+  const xmlText = document.getElementById('factura-xml').textContent.trim();
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+  const ns = "http://www.sat.gob.mx/cfd/4";
+  const nsTFD = "http://www.sat.gob.mx/TimbreFiscalDigital";
+
+  function q(name, ctx = xmlDoc, namespace = ns){ 
+    if(!ctx) return "";
+    const node = ctx.getElementsByTagNameNS(namespace, name)[0];
+    return node ? node.textContent : ""; 
+  }
+  function qAll(name, ctx = xmlDoc, namespace = ns){ 
+    return Array.from(ctx.getElementsByTagNameNS(namespace, name)); 
+  }
+  function attr(node, name){
+    return node ? (node.getAttribute(name) || '') : '';
+  }
+
+  const root = document.getElementById('invoiceRoot');
+  const comprobante = xmlDoc.documentElement;
+  
+  // Atributos del Comprobante
+  const version = attr(comprobante, 'Version');
+  const serie = attr(comprobante, 'Serie');
+  const folio = attr(comprobante, 'Folio');
+  const fecha = attr(comprobante, 'Fecha');
+  const sello = attr(comprobante, 'Sello');
+  const formaPago = attr(comprobante, 'FormaPago');
+  const noCertificado = attr(comprobante, 'NoCertificado');
+  const certificado = attr(comprobante, 'Certificado');
+  const subtotal = attr(comprobante, 'SubTotal');
+  const moneda = attr(comprobante, 'Moneda');
+  const total = attr(comprobante, 'Total');
+  const tipoComprobante = attr(comprobante, 'TipoDeComprobante');
+  const exportacion = attr(comprobante, 'Exportacion');
+  const metodoPago = attr(comprobante, 'MetodoPago');
+  const condicionesDePago = attr(comprobante, 'CondicionesDePago');
+  const lugarExpedicion = attr(comprobante, 'LugarExpedicion');
+  
+  // Emisor
+  const emisorNode = qAll('Emisor')[0];
+  const emisorRfc = attr(emisorNode, 'Rfc');
+  const emisorNombre = attr(emisorNode, 'Nombre');
+  const emisorRegimen = attr(emisorNode, 'RegimenFiscal');
+  
+  // Receptor
+  const receptorNode = qAll('Receptor')[0];
+  const receptorRfc = attr(receptorNode, 'Rfc');
+  const receptorNombre = attr(receptorNode, 'Nombre');
+  const receptorDomicilio = attr(receptorNode, 'DomicilioFiscalReceptor');
+  const receptorRegimen = attr(receptorNode, 'RegimenFiscalReceptor');
+  const receptorUso = attr(receptorNode, 'UsoCFDI');
+  
+  // Timbre Fiscal Digital
+  const timbreNode = qAll('TimbreFiscalDigital', xmlDoc, nsTFD)[0];
+  const uuid = attr(timbreNode, 'UUID');
+  const fechaTimbrado = attr(timbreNode, 'FechaTimbrado');
+  const rfcProvCertif = attr(timbreNode, 'RfcProvCertif');
+  const noCertificadoSAT = attr(timbreNode, 'NoCertificadoSAT');
+  const selloSAT = attr(timbreNode, 'SelloSAT');
+  const selloCFD = attr(timbreNode, 'SelloCFD');
+
+  root.innerHTML = `
+    <header>
+      <div>
+        <h1>FACTURA (CFDI ${version}) <span class="type">(xs:string)</span> <span class="badge estandar">estándar</span></h1>
+        <div class="small">Serie: <strong>${serie}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span> • Folio: <strong>${folio}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+        <div class="small">Tipo: <strong>${tipoComprobante}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span> • Exportación: <strong>${exportacion}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+      </div>
+      <div style="text-align:right">
+        <div class="small">Fecha emisión: <strong>${new Date(fecha).toLocaleString()}</strong> <span class="type">(xs:dateTime)</span> <span class="badge simple">simple</span></div>
+        <div class="small">Lugar expedición: <strong>${lugarExpedicion}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+        <div class="small">Método pago: <strong>${metodoPago}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span> • Forma pago: <strong>${formaPago}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+        ${condicionesDePago ? `<div class="small">Condiciones: <strong>${condicionesDePago}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>` : ''}
+      </div>
+    </header>
+
+    <section class="emisor-receptor">
+      <div class="box">
+        <strong>Emisor <span class="badge estandar">estándar</span></strong><br/>
+        <div class="meta">RFC: <strong>${emisorRfc}</strong> <span class="type">(xs:string)</span> <span class="badge estandar">estándar</span></div>
+        <div class="meta">Nombre: ${emisorNombre} <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+        <div class="meta">Régimen fiscal: <strong>${emisorRegimen}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+      </div>
+      <div class="box">
+        <strong>Receptor <span class="badge estandar">estándar</span></strong><br/>
+        <div class="meta">RFC: <strong>${receptorRfc}</strong> <span class="type">(xs:string)</span> <span class="badge estandar">estándar</span></div>
+        <div class="meta">Nombre: ${receptorNombre} <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+        <div class="meta">Domicilio fiscal: <strong>${receptorDomicilio}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+        <div class="meta">Régimen fiscal: <strong>${receptorRegimen}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+        <div class="meta">Uso CFDI: <strong>${receptorUso}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+      </div>
+    </section>
+
+    <div class="section-title">Conceptos <span class="badge complejo">complejo</span></div>
+    <table>
+      <thead>
+        <tr>
+          <th>ClaveProdServ <span class="type">(xs:string)</span> <span class="badge simple">simple</span></th>
+          <th>NoIdentificación <span class="type">(xs:string)</span> <span class="badge simple">simple</span></th>
+          <th>Cantidad <span class="type">(xs:decimal)</span> <span class="badge simple">simple</span></th>
+          <th>ClaveUnidad <span class="type">(xs:string)</span> <span class="badge simple">simple</span></th>
+          <th>Descripción <span class="type">(xs:string)</span> <span class="badge complejo">complejo</span></th>
+          <th class="right">Valor Unit. <span class="type">(xs:decimal)</span> <span class="badge simple">simple</span></th>
+          <th class="right">Importe <span class="type">(xs:decimal)</span> <span class="badge estandar">estándar</span></th>
+        </tr>
+      </thead>
+      <tbody id="itemsBody"></tbody>
+      <tfoot>
+        <tr><td colspan="6" class="right">Subtotal <span class="type">(xs:decimal)</span> <span class="badge estandar">estándar</span></td><td class="right"><strong>$${parseFloat(subtotal).toLocaleString('es-MX', {minimumFractionDigits:2})}</strong></td></tr>
+        <tr><td colspan="6" class="right">IVA Trasladado (16%) <span class="type">(xs:decimal)</span> <span class="badge estandar">estándar</span></td><td id="ivaCell" class="right"></td></tr>
+        <tr><td colspan="6" class="right"><strong>Total</strong> <span class="type">(xs:decimal)</span> <span class="badge estandar">estándar</span></td><td class="right"><strong>$${parseFloat(total).toLocaleString('es-MX', {minimumFractionDigits:2})}</strong></td></tr>
+      </tfoot>
+    </table>
+
+    <div class="section-title">Impuestos <span class="badge complejo">complejo</span></div>
+    <div id="impuestosDetail" class="small"></div>
+
+    <div class="section-title">Timbre Fiscal Digital (TFD) <span class="badge complejo">complejo</span></div>
+    <div class="box">
+      <div class="meta">UUID (Folio Fiscal): <strong>${uuid}</strong> <span class="type">(xs:string)</span> <span class="badge estandar">estándar</span></div>
+      <div class="meta">Fecha timbrado: <strong>${new Date(fechaTimbrado).toLocaleString()}</strong> <span class="type">(xs:dateTime)</span> <span class="badge simple">simple</span></div>
+      <div class="meta">RFC Proveedor Certificación: <strong>${rfcProvCertif}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+      <div class="meta">No. Certificado SAT: <strong>${noCertificadoSAT}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+    </div>
+
+    <div class="section-title">Certificados y Sellos <span class="badge complejo">complejo</span></div>
+    <div class="box">
+      <div class="meta">No. Certificado Emisor: <strong>${noCertificado}</strong> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></div>
+      <div class="meta cadena">Sello Digital CFDI: ${selloCFD.slice(0,100)}... <span class="type">(xs:base64Binary)</span> <span class="badge complejo">complejo</span></div>
+      <div class="meta cadena">Sello SAT: ${selloSAT.slice(0,100)}... <span class="type">(xs:base64Binary)</span> <span class="badge complejo">complejo</span></div>
+      <div class="meta cadena">Certificado Emisor (Base64): ${certificado.slice(0,100)}... <span class="type">(xs:base64Binary)</span> <span class="badge complejo">complejo</span></div>
+    </div>
+
+  <!-- QR interno removido: ahora se muestra solamente el QR fijo en la esquina inferior derecha -->
+
+    <div class="note">
+      <p><strong>Nota:</strong> Este es un ejemplo de visualización de CFDI 4.0 con todos los campos típicos.</p>
+      <p>Para verificar la validez, escanea el código QR o visita el portal del SAT.</p>
+    </div>
+  `;
+
+  // Conceptos
+  const conceptos = qAll('Concepto');
+  const tbody = document.getElementById('itemsBody');
+  let totalIvaConceptos = 0;
+  
+  conceptos.forEach(c => {
+    const claveProd = attr(c, 'ClaveProdServ');
+    const noIdent = attr(c, 'NoIdentificacion');
+    const cantidad = attr(c, 'Cantidad');
+    const claveUnidad = attr(c, 'ClaveUnidad');
+    const unidad = attr(c, 'Unidad');
+    const descripcion = attr(c, 'Descripcion');
+    const valorUnit = attr(c, 'ValorUnitario');
+    const importe = attr(c, 'Importe');
+    const objetoImp = attr(c, 'ObjetoImp');
+    
+    // Traslados del concepto
+    const trasladosConcepto = qAll('Traslado', c);
+    let ivaConcepto = 0;
+    trasladosConcepto.forEach(t => {
+      const imp = attr(t, 'Importe');
+      if(imp) ivaConcepto += parseFloat(imp);
+    });
+    totalIvaConceptos += ivaConcepto;
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${claveProd} <span class="type">(xs:string)</span> <span class="badge simple">simple</span></td>
+      <td class="small">${noIdent} <span class="type">(xs:string)</span> <span class="badge simple">simple</span></td>
+      <td>${cantidad} <span class="type">(xs:decimal)</span> <span class="badge simple">simple</span></td>
+      <td>${claveUnidad} <span class="small">(${unidad})</span> <span class="type">(xs:string)</span> <span class="badge simple">simple</span></td>
+      <td class="small">${descripcion} <span class="type">(xs:string)</span> <span class="badge complejo">complejo</span></td>
+      <td class="right">$${parseFloat(valorUnit).toLocaleString('es-MX', {minimumFractionDigits:2})} <span class="type">(xs:decimal)</span> <span class="badge simple">simple</span></td>
+      <td class="right"><strong>$${parseFloat(importe).toLocaleString('es-MX', {minimumFractionDigits:2})}</strong> <span class="type">(xs:decimal)</span> <span class="badge estandar">estándar</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('ivaCell').innerHTML = `<strong>$${totalIvaConceptos.toLocaleString('es-MX', {minimumFractionDigits:2})}</strong>`;
+
+  // Detalle de impuestos
+  const impuestosNode = qAll('Impuestos')[0];
+  const totalImpTras = attr(impuestosNode, 'TotalImpuestosTrasladados');
+  const trasladosGlobal = qAll('Traslado', impuestosNode);
+  
+  let impHtml = `<div class="meta">Total Impuestos Trasladados: <strong>$${parseFloat(totalImpTras).toLocaleString('es-MX', {minimumFractionDigits:2})}</strong> <span class="type">(xs:decimal)</span> <span class="badge estandar">estándar</span></div>`;
+  trasladosGlobal.forEach(t => {
+    const base = attr(t, 'Base');
+    const impuesto = attr(t, 'Impuesto');
+    const tipoFactor = attr(t, 'TipoFactor');
+    const tasa = attr(t, 'TasaOCuota');
+    const importe = attr(t, 'Importe');
+    impHtml += `<div class="meta">→ Impuesto: <strong>${impuesto}</strong> <span class="type">(xs:string)</span>, Base: $${parseFloat(base).toLocaleString('es-MX', {minimumFractionDigits:2})} <span class="type">(xs:decimal)</span>, ${tipoFactor}: ${tasa} <span class="type">(xs:decimal)</span>, Importe: <strong>$${parseFloat(importe).toLocaleString('es-MX', {minimumFractionDigits:2})}</strong> <span class="type">(xs:decimal)</span> <span class="badge simple">simple</span></div>`;
+  });
+  document.getElementById('impuestosDetail').innerHTML = impHtml;
+
+  // Generar texto del QR con datos del CFDI (se usará únicamente en el QR fijo)
+  const qrText = `https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?id=${uuid}&re=${emisorRfc}&rr=${receptorRfc}&tt=${total}&fe=${selloSAT.slice(-8)}`;
+  // Además mostrar un QR fijo abajo a la derecha
+  const qrBottom = document.getElementById('qr-bottom');
+  if(qrBottom){
+    // limpiar contenido previo y mostrar contenedor
+    qrBottom.innerHTML = `<div class="small">Escanea para verificar en el portal del SAT</div>`;
+    qrBottom.style.display = 'block';
+    // generar QR más compacto para la esquina
+    new QRCode(qrBottom, {
+      text: qrText,
+      width: 120,
+      height: 120,
+    });
+  }
+  
+  // Añadir botones de acción
+  const actions = document.createElement('div');
+  actions.style.marginTop = '16px';
+  actions.innerHTML = `
+    <button id="downloadXml">📥 Descargar XML</button>
+    <button id="copyXml">📋 Copiar XML</button>
+    <button id="printView">🖨️ Imprimir</button>
+  `;
+  root.appendChild(actions);
+  
+  document.getElementById('downloadXml').addEventListener('click', ()=>{
+    const blob = new Blob([xmlText], {type:'application/xml'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; 
+    a.download = `CFDI_${serie}_${folio}_${uuid.slice(0,8)}.xml`;
+    document.body.appendChild(a); 
+    a.click(); 
+    a.remove(); 
+    URL.revokeObjectURL(url);
+  });
+  
+  document.getElementById('copyXml').addEventListener('click', async ()=>{
+    try{ 
+      await navigator.clipboard.writeText(xmlText); 
+      alert('✅ XML copiado al portapapeles'); 
+    }catch(e){ 
+      alert('❌ No se pudo copiar: ' + e.message); 
+    }
+  });
+  
+  document.getElementById('printView').addEventListener('click', ()=>{
+    window.print();
+  });
+})();
+</script>
+</body>
+</html> 
