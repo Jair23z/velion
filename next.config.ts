@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
     'http://localhost:3000',
     'http://192.168.1.156:3000',
   ],
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client', 'prisma'],
+  },
   images: {
     remotePatterns: [
       {
