@@ -10,7 +10,6 @@ const nextConfig: NextConfig = {
     'http://localhost:3000',
     'http://192.168.1.156:3000',
   ],
-  output: 'standalone',
   images: {
     remotePatterns: [
       {
