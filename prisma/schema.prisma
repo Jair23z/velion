@@ -44,23 +44,23 @@ model User {
   name          String?
   email         String    @unique
   emailVerified DateTime?
-  password      String?   // Para email/password auth
+  password      String? // Para email/password auth
   image         String?
-  
+
   // Datos para facturación
-  rfc           String?
-  razonSocial   String?
-  regimenFiscal String?
-  usoCfdi       String?
-  codigoPostal  String?
-  calle         String?
+  rfc            String?
+  razonSocial    String?
+  regimenFiscal  String?
+  usoCfdi        String?
+  codigoPostal   String?
+  calle          String?
   numeroExterior String?
   numeroInterior String?
-  colonia       String?
-  municipio     String?
-  estado        String?
-  pais          String?   @default("México")
-  
+  colonia        String?
+  municipio      String?
+  estado         String?
+  pais           String? @default("México")
+
   accounts      Account[]
   sessions      Session[]
   purchases     Purchase[]
@@ -68,9 +68,9 @@ model User {
   subscriptions Subscription[]
   watchHistory  WatchHistory[]
   favorites     Favorite[]
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -85,141 +85,141 @@ model VerificationToken {
 
 // Géneros de contenido
 model Genre {
-  id        String   @id @default(cuid())
-  name      String   @unique // Acción, Drama, Comedia, Horror, Sci-Fi, etc
-  slug      String   @unique
-  
-  movies    Movie[]
-  series    Series[]
-  
+  id   String @id @default(cuid())
+  name String @unique // Acción, Drama, Comedia, Horror, Sci-Fi, etc
+  slug String @unique
+
+  movies Movie[]
+  series Series[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Películas
 model Movie {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   title       String
-  description String?  @db.Text
-  thumbnail   String?  // URL de la imagen/poster (vertical)
-  backdrop    String?  // URL de la imagen horizontal para hero
-  videoUrl    String   // URL del video en Supabase Storage
-  duration    Int      // Duración en segundos (del clip de 10 min)
-  year        Int?     // Año de lanzamiento
-  rating      String?  // PG, PG-13, R, etc
+  description String? @db.Text
+  thumbnail   String? // URL de la imagen/poster (vertical)
+  backdrop    String? // URL de la imagen horizontal para hero
+  videoUrl    String // URL del video en Supabase Storage
+  duration    Int // Duración en segundos (del clip de 10 min)
+  year        Int? // Año de lanzamiento
+  rating      String? // PG, PG-13, R, etc
   genreId     String
-  
+
   genre        Genre          @relation(fields: [genreId], references: [id])
   watchHistory WatchHistory[]
   favorites    Favorite[]
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@index([genreId])
 }
 
 // Series
 model Series {
-  id          String    @id @default(cuid())
+  id          String  @id @default(cuid())
   title       String
-  description String?   @db.Text
-  thumbnail   String?   // URL de la imagen/poster
+  description String? @db.Text
+  thumbnail   String? // URL de la imagen/poster
   year        Int?
   rating      String?
   genreId     String
-  
-  genre    Genre     @relation(fields: [genreId], references: [id])
-  seasons  Season[]
-  
+
+  genre   Genre    @relation(fields: [genreId], references: [id])
+  seasons Season[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@index([genreId])
 }
 
 // Temporadas de series
 model Season {
-  id          String    @id @default(cuid())
-  seriesId    String
+  id           String  @id @default(cuid())
+  seriesId     String
   seasonNumber Int
-  title       String?
-  
+  title        String?
+
   series   Series    @relation(fields: [seriesId], references: [id], onDelete: Cascade)
   episodes Episode[]
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@unique([seriesId, seasonNumber])
   @@index([seriesId])
 }
 
 // Episodios
 model Episode {
-  id            String   @id @default(cuid())
+  id            String  @id @default(cuid())
   seasonId      String
   episodeNumber Int
   title         String
-  description   String?  @db.Text
+  description   String? @db.Text
   thumbnail     String?
-  videoUrl      String   // URL del video en Supabase Storage
-  duration      Int      // Duración en segundos
-  
+  videoUrl      String // URL del video en Supabase Storage
+  duration      Int // Duración en segundos
+
   season       Season         @relation(fields: [seasonId], references: [id], onDelete: Cascade)
   watchHistory WatchHistory[]
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@unique([seasonId, episodeNumber])
   @@index([seasonId])
 }
 
 // Planes de suscripción
 model SubscriptionPlan {
-  id            String   @id @default(cuid())
-  name          String   @unique // "Básico", "Premium", "VIP"
-  description   String?  @db.Text
-  price         Decimal  @db.Decimal(10, 2) // Precio mensual en MXN
-  durationDays  Int      @default(30) // Duración en días (30 = mensual)
-  features      String[] // ["HD", "2 Dispositivos", "Sin anuncios"]
-  isActive      Boolean  @default(true)
-  
+  id           String   @id @default(cuid())
+  name         String   @unique // "Básico", "Premium", "VIP"
+  description  String?  @db.Text
+  price        Decimal  @db.Decimal(10, 2) // Precio mensual en MXN
+  durationDays Int      @default(30) // Duración en días (30 = mensual)
+  features     String[] // ["HD", "2 Dispositivos", "Sin anuncios"]
+  isActive     Boolean  @default(true)
+
   subscriptions Subscription[]
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Suscripciones de usuarios
 model Subscription {
-  id        String   @id @default(cuid())
-  userId    String
-  planId    String
-  
+  id     String @id @default(cuid())
+  userId String
+  planId String
+
   status    String   @default("active") // "active", "cancelled", "expired", "pending"
   startDate DateTime @default(now())
   endDate   DateTime // Fecha de expiración
-  
+
   // Datos de pago
-  paymentMethod   String?  // "oxxo", "card", "spei"
-  openpayOrderId  String?  @unique
-  
+  paymentMethod  String? // "oxxo", "card", "spei"
+  openpayOrderId String? @unique
+
   // Datos para facturación
-  invoiceNumber   String?  @unique // Folio único para facturar esta suscripción
-  invoiceIssued   Boolean  @default(false) // Si ya se generó factura
-  
+  invoiceNumber String? @unique // Folio único para facturar esta suscripción
+  invoiceIssued Boolean @default(false) // Si ya se generó factura
+
   // Relación con factura
-  purchaseId String?  @unique
-  
+  purchaseId String? @unique
+
   user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   plan     SubscriptionPlan @relation(fields: [planId], references: [id])
   purchase Purchase?        @relation(fields: [purchaseId], references: [id])
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@index([userId])
   @@index([status])
   @@index([endDate])
@@ -227,22 +227,22 @@ model Subscription {
 
 // Historial de visualización
 model WatchHistory {
-  id         String   @id @default(cuid())
-  userId     String
-  movieId    String?
-  episodeId  String?
-  
-  progress   Int      @default(0) // Segundos vistos
-  completed  Boolean  @default(false)
+  id        String  @id @default(cuid())
+  userId    String
+  movieId   String?
+  episodeId String?
+
+  progress    Int      @default(0) // Segundos vistos
+  completed   Boolean  @default(false)
   lastWatched DateTime @default(now())
-  
+
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   movie   Movie?   @relation(fields: [movieId], references: [id], onDelete: Cascade)
   episode Episode? @relation(fields: [episodeId], references: [id], onDelete: Cascade)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@unique([userId, movieId])
   @@unique([userId, episodeId])
   @@index([userId])
@@ -250,84 +250,84 @@ model WatchHistory {
 
 // Compras/Órdenes (para facturación)
 model Purchase {
-  id              String    @id @default(cuid())
-  userId          String
-  amount          Decimal   @db.Decimal(10, 2)
-  description     String    // "Suscripción Premium - 1 mes"
-  
+  id          String  @id @default(cuid())
+  userId      String
+  amount      Decimal @db.Decimal(10, 2)
+  description String // "Suscripción Premium - 1 mes"
+
   // Datos de pago
-  paymentMethod   String    // "oxxo", "card", "spei"
-  paymentStatus   String    @default("pending") // "pending", "paid", "failed", "cancelled"
-  openpayOrderId  String?   @unique
-  oxxoReference   String?
-  
+  paymentMethod  String // "oxxo", "card", "spei"
+  paymentStatus  String  @default("pending") // "pending", "paid", "failed", "cancelled"
+  openpayOrderId String? @unique
+  oxxoReference  String?
+
   // Relación con factura
-  requiresInvoice Boolean      @default(false)
-  invoiceId       String?      @unique
+  requiresInvoice Boolean       @default(false)
+  invoiceId       String?       @unique
   subscription    Subscription?
-  
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  invoice   Invoice? @relation(fields: [invoiceId], references: [id])
-  
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoice Invoice? @relation(fields: [invoiceId], references: [id])
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   paidAt    DateTime?
-  
+
   @@index([userId])
   @@index([paymentStatus])
 }
 
 model Invoice {
-  id              String    @id @default(cuid())
-  userId          String
-  purchaseId      String?   @unique
-  
+  id         String  @id @default(cuid())
+  userId     String
+  purchaseId String? @unique
+
   // Datos de la factura
-  folio           String    @unique
-  serie           String?
-  fecha           DateTime  @default(now())
-  subtotal        Decimal   @db.Decimal(10, 2)
-  iva             Decimal   @db.Decimal(10, 2)
-  total           Decimal   @db.Decimal(10, 2)
-  
+  folio    String   @unique
+  serie    String?
+  fecha    DateTime @default(now())
+  subtotal Decimal  @db.Decimal(10, 2)
+  iva      Decimal  @db.Decimal(10, 2)
+  total    Decimal  @db.Decimal(10, 2)
+
   // Datos fiscales del receptor
-  rfc             String
-  razonSocial     String
-  regimenFiscal   String
-  usoCfdi         String
-  codigoPostal    String
-  domicilio       String?
-  
+  rfc           String
+  razonSocial   String
+  regimenFiscal String
+  usoCfdi       String
+  codigoPostal  String
+  domicilio     String?
+
   // Método de pago
-  formaPago       String?   // 01, 02, 03, etc.
-  metodoPago      String?   // PUE, PPD
-  
+  formaPago  String? // 01, 02, 03, etc.
+  metodoPago String? // PUE, PPD
+
   // Archivos generados
-  xmlUrl          String?   @db.Text
-  pdfUrl          String?
-  uuid            String?   @unique // UUID del SAT
-  
+  xmlUrl String? @db.Text
+  pdfUrl String?
+  uuid   String? @unique // UUID del SAT
+
   // Status
-  status          String    @default("pending") // pending, issued, cancelled
-  
-  user            User      @relation(fields: [userId], references: [id])
-  purchase        Purchase?
-  
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  status String @default("pending") // pending, issued, cancelled
+
+  user     User      @relation(fields: [userId], references: [id])
+  purchase Purchase?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // Lista de favoritos (Mi Lista)
 model Favorite {
-  id        String   @id @default(cuid())
-  userId    String
-  movieId   String
-  
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  movie     Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
-  
+  id      String @id @default(cuid())
+  userId  String
+  movieId String
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
-  
+
   @@unique([userId, movieId])
   @@index([userId])
   @@index([movieId])
