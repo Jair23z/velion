@@ -67,7 +67,7 @@ export default function HeroCarousel({
   const isFavorite = favorites.includes(currentMovie.id);  
   
   return (
-    <section className="relative h-[85vh] w-full overflow-hidden">
+    <section className="relative h-[65vh] md:h-[85vh] w-full overflow-hidden py-2 md:py-0">
       {/* Background Image con efecto parallax */}
       <div className="absolute inset-0 transition-all duration-700 ease-in-out">
         {movies.map((movie, index) => (
@@ -94,11 +94,11 @@ export default function HeroCarousel({
       </div>
 
       {/* Contenido del slide actual */}
-      <div className="relative z-20 h-full flex flex-col justify-center px-6 md:px-26 max-w-5xl">
+      <div className="relative z-20 h-full flex flex-col justify-center px-4 md:px-26 max-w-5xl">
         <div className="space-y-4 animate-fade-in">
           {/* Badge del género */}
           <div className="flex items-center gap-3">
-            <span className="px-3 py-1 bg-green-600/80 text-white text-xs font-bold uppercase rounded">
+            <span className="px-3 py-1 bg-green-600/80 text-white text-[0.6rem] font-bold uppercase rounded">
               VELION ORIGINAL
             </span>
             <span className="px-3 py-1 bg-green-600/20 border border-green-600/50 text-green-400 rounded-full text-sm">
@@ -107,7 +107,7 @@ export default function HeroCarousel({
           </div>
 
           {/* Título */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight  text-white">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight text-white">
             {currentMovie.title}
           </h1>
 
@@ -123,7 +123,7 @@ export default function HeroCarousel({
           </div>
 
           {/* Descripción */}
-          <p className="text-base md:text-lg text-gray-200 line-clamp-3 max-w-2xl leading-relaxed">
+          <p className="text-sm md:text-lg text-gray-200 line-clamp-3 md:line-clamp-3 max-w-2xl leading-relaxed">
             {currentMovie.description}
           </p>
 
@@ -131,7 +131,7 @@ export default function HeroCarousel({
           <div className="flex flex-wrap gap-3 pt-2">
             <Link
               href={`/movie/${currentMovie.id}`}
-              className="px-8 py-3 bg-green-600/80 hover:bg-green-600 text-white font-bold rounded-md transition-all transform hover:scale-105 flex items-center gap-2 shadow-lg"
+              className="px-8 py-3 bg-green-600/80 hover:bg-green-600 text-white font-bold rounded-md text-sm md:text-base transition-all transform hover:scale-105 flex items-center gap-2 shadow-lg"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
@@ -159,7 +159,7 @@ export default function HeroCarousel({
       {/* Controles de navegación - Flechas */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 cursor-pointer top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center transition-all backdrop-blur-sm group"
+        className="absolute left-4 md:opacity-100 opacity-50 cursor-pointer top-1/2 -translate-y-1/2 z-30 w-8 h-8 md:w-12 md:h-12 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center transition-all backdrop-blur-sm group"
         aria-label="Anterior"
       >
         <svg
@@ -178,7 +178,7 @@ export default function HeroCarousel({
       </button>
       <button
         onClick={nextSlide}
-        className="absolute cursor-pointer right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center transition-all backdrop-blur-sm group"
+        className="absolute cursor-pointer md:opacity-100 opacity-50 right-4 top-1/2 -translate-y-1/2 z-30 w-8 h-8 md:w-12 md:h-12 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center transition-all backdrop-blur-sm group"
         aria-label="Siguiente"
       >
         <svg

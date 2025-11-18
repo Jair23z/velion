@@ -24,25 +24,27 @@ export default async function FacturasPage() {
     <div className="min-h-screen overflow-hidden bg-gray-950">
       <Header />
 
-      <div className="max-w-6xl mx-auto px-4 py-12 mt-20">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-12 mt-20">
         {/* Encabezado */}
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-6 md:mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-white mb-2">Mis Facturas</h1>
-            <p className="text-gray-400">
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Mis Facturas</h1>
+            <p className="text-sm md:text-gray-400 md:text-base text-gray-400">
               Descarga tus facturas en formato PDF y XML
             </p>
           </div>
 
           <Link
-          href={'/facturacion'}
-          className="bg-gray-800 p-2 rounded-lg hover:opacity-85 transition-opacity duration-200"
-          >Agregar factura</Link>
+            href={'/facturacion'}
+            className="w-full md:w-auto text-center bg-gray-800 p-2 md:px-4 md:py-2 rounded-lg hover:opacity-85 transition-opacity duration-200"
+          >
+            Agregar factura
+          </Link>
         </div>
 
         {invoices.length === 0 ? (
           // Sin facturas
-          <div className="bg-gray-900 rounded-lg p-12 text-center border border-gray-800">
+          <div className="bg-gray-900 rounded-lg p-8 md:p-12 text-center border border-gray-800">
             <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
                 className="w-10 h-10 text-gray-600"
@@ -58,13 +60,13 @@ export default async function FacturasPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-2">
               No tienes facturas aún
             </h3>
 
             <Link
               href="/facturacion"
-              className="inline-block px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
+              className="inline-block px-4 py-2 md:px-6 md:py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition w-full md:w-auto"
             >
               Crea una aquí
             </Link>
@@ -75,13 +77,13 @@ export default async function FacturasPage() {
             {invoices.map((invoice) => (
               <div
                 key={invoice.id}
-                className="bg-gray-900 rounded-lg p-6 border border-gray-800 hover:border-gray-700 transition"
+                className="bg-gray-900 rounded-lg p-4 md:p-6 border border-gray-800 hover:border-gray-700 transition"
               >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                   {/* Información de la factura */}
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-xl font-bold text-white">
+                      <h3 className="text-lg md:text-xl font-bold text-white">
                         Factura {invoice.folio}
                       </h3>
                       <span
@@ -101,39 +103,27 @@ export default async function FacturasPage() {
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                      <div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 text-xs md:text-sm mt-3">
+                      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
                         <span className="text-gray-400">RFC:</span>
-                        <span className="text-white ml-2">{invoice.rfc}</span>
+                        <span className="text-white mt-1 md:mt-0 md:ml-2 wrap-break-word">{invoice.rfc}</span>
                       </div>
-                      <div>
+                      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
                         <span className="text-gray-400">Razón Social:</span>
-                        <span className="text-white ml-2">
-                          {invoice.razonSocial}
-                        </span>
+                        <span className="text-white mt-1 md:mt-0 md:ml-2 wrap-break-word">{invoice.razonSocial}</span>
                       </div>
-                      <div>
+                      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
                         <span className="text-gray-400">Fecha:</span>
-                        <span className="text-white ml-2">
-                          {new Date(invoice.fecha).toLocaleDateString("es-MX", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </span>
+                        <span className="text-white mt-1 md:mt-0 md:ml-2">{new Date(invoice.fecha).toLocaleDateString("es-MX", { year: "numeric", month: "long", day: "numeric" })}</span>
                       </div>
-                      <div>
+                      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-1">
                         <span className="text-gray-400">Total:</span>
-                        <span className="text-white ml-2 font-semibold">
-                          ${invoice.total.toString()} MXN
-                        </span>
+                        <span className="text-white mt-1 md:mt-0 md:ml-2 font-semibold">${invoice.total.toString()} MXN</span>
                       </div>
                       {invoice.uuid && (
-                        <div className="col-span-2">
+                        <div className="col-span-1 md:col-span-2">
                           <span className="text-gray-400">UUID:</span>
-                          <span className="text-white ml-2 text-xs font-mono">
-                            {invoice.uuid}
-                          </span>
+                          <span className="text-white block mt-1 text-xs font-mono wrap-break-word">{invoice.uuid}</span>
                         </div>
                       )}
                     </div>
@@ -141,14 +131,14 @@ export default async function FacturasPage() {
 
                   {/* Botones de descarga */}
                   {invoice.status === "issued" && (
-                    <div className="flex flex-col gap-2 md:min-w-[200px]">
+                    <div className="flex flex-col gap-2 md:min-w-[200px] items-stretch md:items-end">
                       {invoice.pdfUrl && (
                         <a
                           href={invoice.pdfUrl}
                           download
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition font-medium"
+                          className="w-full md:w-auto flex items-center justify-center gap-2 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition font-medium"
                         >
                           <svg
                             className="w-5 h-5"
@@ -172,7 +162,7 @@ export default async function FacturasPage() {
                           download
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium"
+                          className="w-full md:w-auto flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium"
                         >
                           <svg
                             className="w-5 h-5"

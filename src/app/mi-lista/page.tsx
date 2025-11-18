@@ -28,14 +28,14 @@ export default async function MiListaPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen overflow-hidden bg-gray-950">
       <Header />
 
       <div className="pt-28 px-8 max-w-[92%] mx-auto pb-20">
         {/* Encabezado */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Mi Lista</h1>
-          <p className="text-gray-400">
+          <h1 className="text-2xl md:text-4xl font-bold text-white mb-2">Mi Lista</h1>
+          <p className="text-sm md:text-base text-gray-400">
             {favorites.length > 0
               ? `${favorites.length} ${favorites.length === 1 ? 'película' : 'películas'} en tu lista`
               : 'Aún no has agregado películas a tu lista'}
@@ -60,15 +60,15 @@ export default async function MiListaPage() {
                 />
               </svg>
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">
+            <h3 className="text-lg md:text-xl font-bold text-white mb-2">
               Tu lista está vacía
             </h3>
-            <p className="text-gray-400 mb-6">
+              <p className="text-sm md:text-base text-gray-400 mb-6">
               Explora el catálogo y agrega películas a tu lista para verlas más tarde
             </p>
             <Link
               href="/"
-              className="inline-block px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
+              className=" text-sm md:text-base inline-block px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
             >
               Explorar Catálogo
             </Link>
@@ -110,7 +110,7 @@ export default async function MiListaPage() {
 
                 {/* Overlay con info */}
                 <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-                  <h3 className="text-white font-bold text-sm mb-1 line-clamp-2">
+                  <h3 className="text-white font-bold text-xs md:text-sm mb-1 line-clamp-2">
                     {favorite.movie.title}
                   </h3>
                   <div className="flex items-center gap-2 text-xs text-gray-300">
@@ -127,7 +127,7 @@ export default async function MiListaPage() {
                 </div>
 
                 {/* Badge en la esquina */}
-                <div className="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded text-[11px] md:text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity">
                   ♥
                 </div>
               </Link>

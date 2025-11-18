@@ -46,7 +46,7 @@ export default async function CheckoutPage() {
     <div className="min-h-screen bg-gray-950">
       <Header />
       
-      <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <div className="pt-25 md:pt-32 pb-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">

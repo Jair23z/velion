@@ -6,6 +6,7 @@ import { useSession, signOut } from "next-auth/react";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const { data: session, status } = useSession();
 
   useEffect(() => {
@@ -43,11 +44,11 @@ export default function Header() {
           : "bg-linear-to-b from-black/80 to-transpar"
       }`}
     >
-      <nav className="flex items-center justify-between px-8 h-full max-w-[92%] mx-auto">
+      <nav className="flex items-center justify-between px-4 md:px-8 h-full max-w-[92%] mx-auto">
         <div className="flex items-center gap-8">
           <Link
             href="/"
-            className="text-4xl font-bold bg-linear-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent"
+            className="text-3xl md:text-4xl font-bold bg-linear-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent"
           >
             VELION
           </Link>
@@ -68,6 +69,16 @@ export default function Header() {
           </div>
         </div>
         <div className="flex items-center gap-4">
+          {/* Mobile menu button */}
+          <button
+            className="md:hidden p-2 rounded hover:bg-gray-800"
+            aria-label="Abrir menú"
+            onClick={() => setIsOpen((s) => !s)}
+          >
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
           {status === "loading" ? (
             <div className="w-8 h-8 animate-pulse bg-gray-700 rounded-full"></div>
           ) : session ? (
@@ -76,7 +87,7 @@ export default function Header() {
               {!session.user.isPremium && (
                 <Link
                   href="/pricing"
-                  className="px-4 py-2 border-2 border-green-600/80 text-white  hover:border-green-600 hover:text-green-600 transition text-basic rounded-lg font-semibold"
+                  className="px-4 md:block hidden py-2 border-2 border-green-600/80 text-white  hover:border-green-600 hover:text-green-600 transition text-xs text-center md:text-basic rounded-lg font-semibold"
                 >
                   Hazte Premium
                 </Link>
@@ -171,22 +182,47 @@ export default function Header() {
           ) : (
             // Usuario no autenticado
             <>
-              <Link
-                href="/login"
-                className="px-4 py-2 rounded hover:bg-gray-800 transition"
-              >
-                Iniciar Sesión
-              </Link>
-              <Link
-                href="/register"
-                className="px-4 py-2 bg-green-600/80 rounded hover:bg-green-600 transition"
-              >
-                Registrarse
-              </Link>
+              <div className="hidden md:flex items-center gap-3">
+                <Link
+                  href="/login"
+                  className="px-4 py-2 rounded hover:bg-gray-800 transition"
+                >
+                  Iniciar Sesión
+                </Link>
+                <Link
+                  href="/register"
+                  className="px-4 py-2 bg-green-600/80 rounded hover:bg-green-600 transition text-white"
+                >
+                  Registrarse
+                </Link>
+              </div>
             </>
           )}
         </div>
       </nav>
+
+      {/* Mobile drawer/menu */}
+      <div
+        className={`fixed top-20 left-0 right-0 z-40 bg-gray-900/95 backdrop-blur-sm transform transition-transform duration-200 md:hidden ${
+          isOpen ? 'translate-y-0 opacity-100' : '-translate-y-[120%] opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="px-4 py-4 flex flex-col gap-3">
+          <Link href="/" className="text-white font-semibold py-2">Catálogo</Link>
+          <Link href="/mi-lista" className="text-white font-semibold py-2">Mi Lista</Link>
+          {status === 'authenticated' ? (
+            <>
+              <Link href="/mi-cuenta" className="w-full text-center px-4 py-3 rounded-lg bg-gray-800 text-white font-medium">Mi Cuenta</Link>
+              <button onClick={() => signOut({ callbackUrl: '/' })} className="w-full text-center px-4 py-3 rounded-lg border border-gray-700 text-red-400 font-medium">Cerrar sesión</button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="w-full text-center px-4 py-3 rounded-lg border border-gray-700 text-white font-medium">Iniciar Sesión</Link>
+              <Link href="/register" className="w-full text-center px-4 py-3 rounded-lg bg-green-600 text-black font-semibold text-white">Registrarse</Link>
+            </>
+          )}
+        </div>
+      </div>
     </header>
   );
 }

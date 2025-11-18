@@ -54,15 +54,15 @@ export default async function MiCuentaPage() {
       <div className="max-w-4xl mx-auto mt-10 px-4 py-12">
         {/* Encabezado */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Mi Cuenta</h1>
-          <p className="text-gray-400">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Mi Cuenta</h1>
+          <p className="text-sm md:text-base text-gray-400">
             Gestiona tu información personal y suscripción
           </p>
         </div>
 
         {/* Información Personal */}
         <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
-          <h2 className="text-2xl font-bold text-white mb-4">
+          <h2 className="text-xl md:text-2xl font-bold text-white mb-4">
             Información Personal
           </h2>
 
@@ -80,7 +80,7 @@ export default async function MiCuentaPage() {
               <label className="text-sm text-gray-400">
                 Correo Electrónico
               </label>
-              <p className="text-white text-lg">{user.email}</p>
+              <p className="text-white text-base md:text-lg">{user.email}</p>
             </div>
             <div>
               <label className="text-sm text-gray-400">Cuenta verificada</label>
@@ -126,7 +126,7 @@ export default async function MiCuentaPage() {
         {/* Estado de Suscripción */}
         <div className="bg-gray-900 rounded-lg p-6 mb-6 border border-gray-800">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-white">Suscripción</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-white">Suscripción</h2>
             <Link
               href="/mi-cuenta/suscripciones"
               className="text-green-500 hover:text-green-400 text-sm font-semibold flex items-center gap-1 transition"
@@ -143,7 +143,7 @@ export default async function MiCuentaPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-400">Plan Actual</p>
-                  <p className="text-2xl font-bold text-green-500">
+                  <p className="text-xl md:text-2xl font-bold text-green-500">
                     {activeSubscription.plan.name}
                   </p>
                 </div>
@@ -200,7 +200,7 @@ export default async function MiCuentaPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-800">
                 <div>
                   <label className="text-sm text-gray-400">Precio</label>
-                  <p className="text-white text-lg font-semibold">
+                  <p className="text-white text-base md:text-lg font-semibold">
                     ${activeSubscription.plan.price.toFixed(2)} MXN / mes
                   </p>
                 </div>
@@ -208,7 +208,7 @@ export default async function MiCuentaPage() {
                   <label className="text-sm text-gray-400">
                     Próxima renovación
                   </label>
-                  <p className="text-white text-lg">
+                  <p className="text-white text-base md:text-lg">
                     {activeSubscription.endDate
                       ? new Date(activeSubscription.endDate).toLocaleDateString(
                           "es-MX",
@@ -225,7 +225,7 @@ export default async function MiCuentaPage() {
                   <label className="text-sm text-gray-400">
                     Fecha de inicio
                   </label>
-                  <p className="text-white text-lg">
+                  <p className="text-white text-base md:text-lg">
                     {new Date(activeSubscription.createdAt).toLocaleDateString(
                       "es-MX",
                       {
@@ -240,7 +240,7 @@ export default async function MiCuentaPage() {
                   <label className="text-sm text-gray-400">
                     Método de pago
                   </label>
-                  <p className="text-white text-lg">
+                  <p className="text-white text-base md:text-lg">
                     Tarjeta de crédito/débito
                   </p>
                 </div>

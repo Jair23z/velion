@@ -40,8 +40,8 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-screen bg-gray-900">
       <div className="border-b border-b-gray-800">
-        <header className="md:max-w-6xl pr-5 md:pr-5 min-h-25 mx-auto flex items-center justify-between">
-          <div className="h-15 w-50 relative">
+         <header className="pl-5 md:max-w-6xl pr-5 md:pr-5 min-h-25 mx-auto flex items-center justify-between">
+          <div className="h-10 w-30  md:h-15 md:w-50  relative">
             <Logo />
           </div>
 

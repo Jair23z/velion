@@ -84,7 +84,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
       <Header />
 
       {/* Hero Section con Backdrop */}
-      <div className="relative h-[78vh] w-full">
+      <div className="relative h-[60vh] md:h-[78vh] w-full">
         {/* Backdrop Image */}
         <div className="absolute inset-0">
           <Image
@@ -100,11 +100,11 @@ export default async function MoviePage({ params }: MoviePageProps) {
         </div>
 
         {/* Contenido sobre el backdrop */}
-        <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-end pb-[7%]">
-          <div className="flex flex-col md:flex-row gap-8 w-full items-center">
+        <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center md:items-end pb-12 md:pb-[7%] mt-15 md:mt-0">
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8 w-full items-start md:items-center">
             {/* Poster */}
-            <div className="shrink-0">
-              <div className="relative w-48 h-72 rounded-lg overflow-hidden shadow-2xl border-2 border-gray-800">
+            <div className="hidden md:block shrink-0 z-20">
+              <div className="relative w-40 h-56 md:w-48 md:h-72 rounded-lg overflow-hidden shadow-2xl border-2 border-gray-800">
                 <Image
                   src={movie.thumbnail || '/placeholder.jpg'}
                   alt={movie.title}
@@ -114,14 +114,15 @@ export default async function MoviePage({ params }: MoviePageProps) {
               </div>
             </div>
 
+
             {/* Info */}
-            <div className="flex-1 flex flex-col justify-end space-y-4 max-w-4xl">
-              <h1 className="text-4xl md:text-[55px] font-bold bg-linear-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-white leading-[1.1] ">
+            <div className="flex-1 flex flex-col justify-end space-y-3 max-w-full md:max-w-4xl">
+              <h1 className="text-2xl md:text-[55px] font-bold bg-linear-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-white leading-[1.05] wrap-break-word">
                 {movie.title}
               </h1>
 
               {/* Metadata */}
-              <div className="flex flex-wrap items-center gap-4 text-gray-300">
+              <div className="flex flex-wrap items-center gap-3 text-gray-300 text-sm">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-5 h-5" />
                   <span>{movie.year}</span>
@@ -134,43 +135,46 @@ export default async function MoviePage({ params }: MoviePageProps) {
                   <span className="font-semibold">{movie.rating}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 fill-yellow-500 text-yellow-500" />
+                  <Star className="w-5 h-5 fill-yellow-500 text-yellow-500 hidden md:block" />
                 </div>
-              </div>
-
-              {/* Género */}
+                  {/* Género */}
               <div className="flex gap-2">
                 <span className="px-3 py-1 bg-green-600/20 border border-green-600/50 text-green-400 rounded-full text-sm">
                   {movie.genre.name}
                 </span>
               </div>
+              </div>
+
+          
 
               {/* Descripción */}
-              <p className="text-lg text-gray-300 max-w-3xl leading-relaxed line-clamp-3">
+              <p className="text-base md:text-lg text-gray-300 max-w-full md:max-w-3xl leading-relaxed line-clamp-4">
                 {movie.description}
               </p>
 
               {/* Botones de acción */}
-              <div className="flex gap-4 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <Link
                   href={`/watch/${id}`}
-                  className="flex items-center gap-2 px-8 py-3 bg-green-600/80 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-green-600/80 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors"
                 >
                   <Play className="w-5 h-5 fill-current" />
                   Ver ahora
                 </Link>
 
                 {session && (
-                  <FavoriteButton 
-                    movieId={movie.id} 
-                    isFavorite={isFavorite} 
-                  />
+                  <div className="w-full sm:w-auto">
+                    <FavoriteButton 
+                      movieId={movie.id} 
+                      isFavorite={isFavorite} 
+                    />
+                  </div>
                 )}
 
                 {session && !hasActiveSubscription && (
                   <Link
                     href="/pricing"
-                    className="px-8 py-3 border-2 border-green-600/80 text-green-400 hover:bg-green-600/10 font-semibold rounded-lg transition-colors"
+                    className="w-full sm:w-auto text-center px-4 py-3 border-2 border-green-600/80 text-green-400 hover:bg-green-600/10 font-semibold rounded-lg transition-colors"
                   >
                     Suscribirse
                   </Link>

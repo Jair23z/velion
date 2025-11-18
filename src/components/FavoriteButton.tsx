@@ -65,7 +65,7 @@ export default function FavoriteButton({
     <button
       onClick={toggleFavorite}
       disabled={loading}
-      className={`flex items-center cursor-pointer gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
+      className={`flex items-center cursor-pointer gap-2 px-4 py-2 text-xs md:text-base rounded-lg font-semibold transition-all duration-300 ${
         localIsFavorite
           ? "bg-red-600 hover:bg-red-700 text-white"
           : "bg-gray-800 hover:bg-gray-700 text-white border border-gray-700"
