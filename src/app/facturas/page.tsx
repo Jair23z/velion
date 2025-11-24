@@ -134,10 +134,7 @@ export default async function FacturasPage() {
                     <div className="flex flex-col gap-2 md:min-w-[200px] items-stretch md:items-end">
                       {invoice.pdfUrl && (
                         <a
-                          href={invoice.pdfUrl}
-                          download
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          href={`/api/invoices/download?name=${encodeURIComponent(String(invoice.pdfUrl))}`}
                           className="w-full md:w-auto flex items-center justify-center gap-2 px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition font-medium"
                         >
                           <svg
@@ -158,10 +155,7 @@ export default async function FacturasPage() {
                       )}
                       {invoice.xmlUrl && (
                         <a
-                          href={invoice.xmlUrl}
-                          download
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          href={`/api/invoices/download?name=${encodeURIComponent(String(invoice.xmlUrl))}`}
                           className="w-full md:w-auto flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium"
                         >
                           <svg

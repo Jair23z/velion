@@ -331,3 +331,12 @@ model Favorite {
   @@index([userId])
   @@index([movieId])
 }
+
+// Webhook events processed by the application
+model WebhookEvent {
+  id          String   @id @default(cuid())
+  eventId     String   @unique
+  eventType   String
+  payload     Json
+  processedAt DateTime @default(now())
+}

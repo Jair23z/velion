@@ -409,7 +409,7 @@ export default function FacturacionPage() {
                         </div>
 
                         <p className='text-sm text-gray-500 text-center'>
-                            El método de pago se determina automáticamente según tu forma de pago en Openpay
+                            El método de pago se determina automáticamente según tu forma de pago en Stripe
                         </p>
                     </form>
                 ) : (
@@ -431,17 +431,13 @@ export default function FacturacionPage() {
 
                         <div className='flex gap-4 mb-6'>
                             <a
-                                href={generatedInvoice.xmlUrl}
-                                download
+                                href={`/api/invoices/download?name=${encodeURIComponent(String(generatedInvoice.xmlUrl))}`}
                                 className='flex-1 text-center bg-blue-600 text-white p-3 font-bold hover:bg-blue-700 transition-colors duration-300 rounded-lg'
                             >
                                 📄 Descargar XML
                             </a>
                             <a
-                                href={generatedInvoice.pdfUrl}
-                                download
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                href={`/api/invoices/download?name=${encodeURIComponent(String(generatedInvoice.pdfUrl))}`}
                                 className='flex-1 text-center bg-red-600 text-white p-3 font-bold hover:bg-red-700 transition-colors duration-300 rounded-lg'
                             >
                                 📕 Descargar PDF

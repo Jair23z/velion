@@ -1,13 +1,37 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { data: session, status } = useSession();
+  const profileRef = useRef<HTMLDivElement | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  useEffect(() => {
+    function handleOutside(e: MouseEvent | TouchEvent) {
+      const target = e.target as Node;
+      if (profileRef.current && !profileRef.current.contains(target)) {
+        setIsProfileOpen(false);
+      }
+    }
+
+    function handleEsc(e: KeyboardEvent) {
+      if (e.key === 'Escape') setIsProfileOpen(false);
+    }
+
+    document.addEventListener('mousedown', handleOutside);
+    document.addEventListener('touchstart', handleOutside);
+    document.addEventListener('keydown', handleEsc);
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      document.removeEventListener('touchstart', handleOutside);
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, []);
 
   useEffect(() => {
     console.log('🟨 [CLIENT HEADER] Session state:', {
@@ -87,13 +111,20 @@ export default function Header() {
               {!session.user.isPremium && (
                 <Link
                   href="/pricing"
-                  className="px-4 md:block hidden py-2 border-2 border-green-600/80 text-white  hover:border-green-600 hover:text-green-600 transition text-xs text-center md:text-basic rounded-lg font-semibold"
+                  className="px-4 md:text-base md:block hidden py-2 border-2 border-green-600/80 text-white  hover:border-green-600 hover:text-green-600 transition text-xs text-center md:text-basic rounded-lg font-semibold"
                 >
                   Hazte Premium
                 </Link>
               )}
-              <div className="relative group">
-                <button className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-800 transition">
+              <div ref={profileRef} className="relative">
+                <button
+                  aria-haspopup="true"
+                  aria-expanded={isProfileOpen}
+                  onClick={() => setIsProfileOpen((s) => !s)}
+                  onMouseEnter={() => setIsProfileOpen(true)}
+                  onMouseLeave={() => setIsProfileOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-800 transition"
+                >
                   {session.user.image ? (
                     <img 
                       src={session.user.image} 
@@ -126,8 +157,12 @@ export default function Header() {
                     />
                   </svg>
                 </button>
-                {/* Dropdown menu */}
-                <div className="absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                {/* Dropdown menu (click / hover friendly) */}
+                <div
+                  className={`absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-lg transition-all duration-200 ${isProfileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+                  onMouseEnter={() => setIsProfileOpen(true)}
+                  onMouseLeave={() => setIsProfileOpen(false)}
+                >
                   <div className="px-4 py-3 border-b border-gray-700">
                     <p className="text-sm font-semibold text-white">
                       {session.user?.name}
@@ -218,7 +253,7 @@ export default function Header() {
           ) : (
             <>
               <Link href="/login" className="w-full text-center px-4 py-3 rounded-lg border border-gray-700 text-white font-medium">Iniciar Sesión</Link>
-              <Link href="/register" className="w-full text-center px-4 py-3 rounded-lg bg-green-600 text-black font-semibold text-white">Registrarse</Link>
+              <Link href="/register" className="w-full text-center px-4 py-3 rounded-lg bg-green-600 font-semibold text-white">Registrarse</Link>
             </>
           )}
         </div>

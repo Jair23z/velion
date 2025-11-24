@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { generateCFDI } from '@/lib/cfdi-generator';
 import { generateInvoicePDF } from '@/lib/pdf-generator';
+import { uploadStringToBlob, uploadBufferToBlob } from '@/lib/azure';
 import { v4 as uuidv4 } from 'uuid';
 
 // Mapear método de pago de Openpay a clave SAT
@@ -105,34 +106,61 @@ export async function POST(request: NextRequest) {
       uuid,
     });
 
-    // Guardar XML
-    const fs = require('fs').promises;
-    const path = require('path');
-    const xmlPath = path.join(process.cwd(), 'public', 'invoices', `${folio}.xml`);
-    await fs.writeFile(xmlPath, xml, 'utf-8');
+    // Subir XML directamente a Azure (no guardamos localmente)
+    if (!process.env.AZURE_STORAGE_CONNECTION_STRING) {
+      console.error('AZURE_STORAGE_CONNECTION_STRING no está configurada');
+      return NextResponse.json({ error: 'Azure Storage no configurada' }, { status: 500 });
+    }
 
-    // Generar PDF usando el generador actualizado
-    const pdfPath = path.join(process.cwd(), 'public', 'invoices', `${folio}.pdf`);
-    await generateInvoicePDF(
-      {
-        folio,
-        serie: 'A',
-        uuid,
-        fecha: new Date(),
-        rfc: fiscalData.rfc.toUpperCase(),
-        razonSocial: fiscalData.razonSocial,
-        regimenFiscal: fiscalData.regimenFiscal,
-        usoCfdi: fiscalData.usoCfdi,
-        codigoPostal: fiscalData.codigoPostal,
-        domicilio,
-        formaPago,
-        metodoPago: 'PUE',
-        subtotal,
-        iva,
-        total,
-      },
-      pdfPath
-    );
+    const xmlBlobName = `invoices/${folio}.xml`;
+    let xmlUrl: string;
+    try {
+      xmlUrl = await uploadStringToBlob(xml, xmlBlobName, 'application/xml');
+    } catch (e: any) {
+      console.error('Error subiendo XML a Azure:', e);
+      return NextResponse.json({ error: 'Error subiendo XML a Azure: ' + (e.message || String(e)) }, { status: 500 });
+    }
+
+    // Generar PDF en memoria y subir a Azure
+    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    const verifyUrl = `${baseUrl}/invoices/verify/${uuid}`;
+    let pdfBuffer: Buffer;
+    try {
+      pdfBuffer = await generateInvoicePDF(
+        {
+          folio,
+          serie: 'A',
+          uuid,
+          fecha: new Date(),
+          rfc: fiscalData.rfc.toUpperCase(),
+          razonSocial: fiscalData.razonSocial,
+          regimenFiscal: fiscalData.regimenFiscal,
+          usoCfdi: fiscalData.usoCfdi,
+          codigoPostal: fiscalData.codigoPostal,
+          domicilio,
+          formaPago,
+          metodoPago: 'PUE',
+          subtotal,
+          iva,
+          total,
+        },
+        `${folio}.pdf`,
+        verifyUrl,
+        false
+      );
+    } catch (e: any) {
+      console.error('Error generando PDF en memoria:', e);
+      return NextResponse.json({ error: 'Error generando PDF: ' + (e.message || String(e)) }, { status: 500 });
+    }
+
+    const pdfBlobName = `invoices/${folio}.pdf`;
+    let pdfUrl: string;
+    try {
+      pdfUrl = await uploadBufferToBlob(pdfBuffer, pdfBlobName, 'application/pdf');
+    } catch (e: any) {
+      console.error('Error subiendo PDF a Azure:', e);
+      return NextResponse.json({ error: 'Error subiendo PDF a Azure: ' + (e.message || String(e)) }, { status: 500 });
+    }
 
     // Guardar datos fiscales del usuario si no los tiene
     await prisma.user.update({
@@ -170,8 +198,8 @@ export async function POST(request: NextRequest) {
         domicilio,
         formaPago,
         metodoPago: 'PUE',
-        xmlUrl: `/invoices/${folio}.xml`,
-        pdfUrl: `/invoices/${folio}.pdf`,
+        xmlUrl: xmlUrl,
+        pdfUrl: pdfUrl,
         uuid,
         status: 'issued',
       },
@@ -190,8 +218,8 @@ export async function POST(request: NextRequest) {
         folio: invoice.folio,
         uuid: invoice.uuid,
       },
-      xmlUrl: `/invoices/${folio}.xml`,
-      pdfUrl: `/invoices/${folio}.pdf`,
+      xmlUrl,
+      pdfUrl,
     });
   } catch (error: any) {
     console.error('Error generando factura:', error);

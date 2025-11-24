@@ -86,8 +86,8 @@ export default async function PricingPage() {
       )}
 
       {/* Planes */}
-      <section className="max-w-6xl mx-auto px-4 md:px-8 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section className="max-w-xl mx-auto px-4 md:px-8 pb-20">
+        <div className=" gap-6">
           {plans.map((plan) => (
             <div
               key={plan.id}
@@ -135,7 +135,7 @@ export default async function PricingPage() {
                     href="/checkout"
                     className="block w-full py-3 md:py-4 rounded-lg font-semibold text-center transition bg-green-600 hover:bg-green-700 text-white text-base md:text-lg"
                   >
-                    Suscribirse por $1 MXN
+                    {`Suscribirse por $${Number(plan.price).toFixed(2)} MXN`}
                   </Link>
                 )
               ) : (
@@ -182,7 +182,7 @@ export default async function PricingPage() {
             </h3>
             <p className="text-sm md:text-base text-gray-300">
               Aceptamos tarjetas de crédito, débito, OXXO y transferencias SPEI a través
-              de Openpay.
+              de Stripe.
             </p>
           </div>
         </div>

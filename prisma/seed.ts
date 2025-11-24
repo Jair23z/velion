@@ -3,10 +3,8 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Seeding database...');
 
   // 1. Crear géneros
-  console.log('📁 Creating genres...');
   const genres = await Promise.all([
     prisma.genre.upsert({
       where: { slug: 'accion' },
@@ -40,10 +38,8 @@ async function main() {
     }),
   ]);
 
-  console.log(`✅ Created ${genres.length} genres`);
 
   // 2. Crear planes de suscripción
-  console.log('💳 Creating subscription plans...');
   const plans = await Promise.all([
     prisma.subscriptionPlan.upsert({
       where: { name: 'Premium' },
@@ -51,7 +47,7 @@ async function main() {
       create: {
         name: 'Premium',
         description: 'Acceso completo a todo el catálogo de películas y series',
-        price: 1.00,
+        price: 10.00,
         durationDays: 30,
         features: ['Catálogo completo', 'Sin anuncios', 'Acceso ilimitado', 'Cancela cuando quieras'],
         isActive: true,
@@ -59,10 +55,8 @@ async function main() {
     }),
   ]);
 
-  console.log(`✅ Created ${plans.length} subscription plan(s)`);
 
   // 3. Crear películas de ejemplo
-  console.log('🎬 Creating sample movies...');
   
   // URLs base de TMDB para imágenes
   const TMDB_POSTER_BASE = 'https://image.tmdb.org/t/p/w500'; // Posters verticales
@@ -550,17 +544,7 @@ async function main() {
     }),
   ]);
 
-  console.log(`✅ Created ${movies.length} sample movies`);
-  console.log('📊 Movies by genre:');
-  console.log('  - Acción: 6 movies');
-  console.log('  - Drama: 6 movies');
-  console.log('  - Comedia: 6 movies');
-  console.log('  - Sci-Fi: 6 movies');
-  console.log('  - Horror: 6 movies');
-  console.log('  - Romance: 6 movies');
-  console.log('  - Total: 36 movies');
 
-  console.log('✨ Seeding completed successfully!');
 }
 
 main()

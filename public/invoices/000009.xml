@@ -6,17 +6,17 @@
     Version="4.0"
     Serie="A"
     Folio="000009"
-    Fecha="2025-10-29T06:12:40.238Z"
+    Fecha="2025-11-23T05:45:21.078Z"
     Sello="oQ3xG8fKLm9pR2vX5tYhN1jC7wZ4sD6eF8aH0bI3kM5nO7pR9qS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2=="
-    FormaPago="02"
+    FormaPago="04"
     NoCertificado="30001000000500003315702"
     Certificado="MIIGTzCCBDegAwIBAgIUMzAwMDEwMDAwMDA1MDAwMDMzMTU3MDIwDQYJKoZIhvcNAQELBQAwggGEMSAwHgYDVQQDDBdBVVRPUklEQUQgQ0VSVElGSUNBRE9SQTEuMCwGA1UECgwlU0VSVklDSU8gREUgQURNSU5JU1RSQUNJT04gVFJJQlVUQVJJQTEYMBYGA1UECwwPRElWSVNJT04gREUgU0FUMRcwFQYDVQQJDA5BViBISURBTEdPIDc3MQ4wDAYDVQQRDAUwNjMwMDELMAkGA1UEBhMCTVgxGTAXBgNVBAgMEENJVURBRCBERSBNRVhJQ08xETAPBgNVBAcMCENPWU9BQ0FOMRUwEwYJKoZIhvcNAQkBFgZzYXRAbXgwHhcNMjQwMTAxMDAwMDAwWhcNMjgxMjMxMjM1OTU5WjCBvDEmMCQGA1UEAxMdVkVMSU9OIERJR0lUQUwgU0EgREUgQ1YxJjAkBgNVBAoTHVZFTElPTiBESUdJVEFMIFNBIERFIENWMR4wHAYDVQQFExUgLyBYWFhYNjAxMDFYWFhYWFhYWFhYMA0GCSqGSIb3DQEBAQUAA4IBAQCaR8..."
     CondicionesDePago="PAGO EN UNA SOLA EXHIBICION"
-    SubTotal="100.00"
+    SubTotal="0.86"
     Descuento="0.00"
     Moneda="MXN"
     TipoCambio="1"
-    Total="116.00"
+    Total="1.00"
     TipoDeComprobante="I"
     Exportacion="01"
     MetodoPago="PUE"
@@ -28,11 +28,11 @@
         RegimenFiscal="601"/>
     
     <cfdi:Receptor 
-        Rfc="SAPJ040825LE3" 
-        Nombre="Jair Emiliano Sanchez Perez" 
+        Rfc="SAPJ0408258L6" 
+        Nombre="Sánchez Pérez Jair Emiliano" 
         DomicilioFiscalReceptor="62744"
-        RegimenFiscalReceptor="615"
-        UsoCFDI="G01"/>
+        RegimenFiscalReceptor="622"
+        UsoCFDI="D01"/>
     
     <cfdi:Conceptos>
         <cfdi:Concepto 
@@ -41,33 +41,33 @@
             Cantidad="1" 
             ClaveUnidad="E48" 
             Unidad="Servicio"
-            Descripcion="Suscripción mensual Velion Premium - Acceso completo a plataforma de streaming con contenido exclusivo. Periodo: 29/10/2025 - 28/11/2025" 
-            ValorUnitario="100.00" 
-            Importe="100.00"
+            Descripcion="Suscripción mensual Velion Premium - Acceso completo a plataforma de streaming con contenido exclusivo. Periodo: 22/11/2025 - 22/12/2025" 
+            ValorUnitario="0.86" 
+            Importe="0.86"
             Descuento="0.00"
             ObjetoImp="02">
             <cfdi:Impuestos>
                 <cfdi:Traslados>
                     <cfdi:Traslado 
-                        Base="100.00" 
+                        Base="0.86" 
                         Impuesto="002" 
                         TipoFactor="Tasa" 
                         TasaOCuota="0.160000" 
-                        Importe="16.00"/>
+                        Importe="0.14"/>
                 </cfdi:Traslados>
             </cfdi:Impuestos>
         </cfdi:Concepto>
     </cfdi:Conceptos>
     
     <cfdi:Impuestos 
-        TotalImpuestosTrasladados="16.00">
+        TotalImpuestosTrasladados="0.14">
         <cfdi:Traslados>
             <cfdi:Traslado 
-                Base="100.00" 
+                Base="0.86" 
                 Impuesto="002" 
                 TipoFactor="Tasa" 
                 TasaOCuota="0.160000" 
-                Importe="16.00"/>
+                Importe="0.14"/>
         </cfdi:Traslados>
     </cfdi:Impuestos>
     
@@ -76,8 +76,8 @@
             xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" 
             xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd"
             Version="1.1"
-            UUID="47a8966a-9f48-45c8-adba-0ef863cfbb4c"
-            FechaTimbrado="2025-10-29T06:12:40.238Z"
+            UUID="A26DFA22-4C87-4695-82E6-C91CA6E52FE7"
+            FechaTimbrado="2025-11-23T05:45:21.078Z"
             RfcProvCertif="SPR190613I52"
             SelloCFD="oQ3xG8fKLm9pR2vX5tYhN1jC7wZ4sD6eF8aH0bI3kM5nO7pR9qS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2nO4pQ6rS8tU0vW2xY4zA6bC8dE0fG2hI4jK6lM8nO0pQ2rS4tU6vW8xY0zA2bC4dE6fG8hI0jK2lM4nO6pQ8rS0tU2vW4xY6zA8bC0dE2fG4hI6jK8lM0nO2pQ4rS6tU8vW0xY2zA4bC6dE8fG0hI2jK4lM6nO8pQ0rS2tU4vW6xY8zA0bC2dE4fG6hI8jK0lM2=="
             NoCertificadoSAT="00001000000504465028"

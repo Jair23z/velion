@@ -12,11 +12,11 @@
     NoCertificado="30001000000500003315702"
     Certificado="MIIGTzCCBDegAwIBAgIUMzAwMDEwMDAwMDA1MDAwMDMzMTU3MDIwDQYJKoZIhvcNAQELBQAwggGEMSAwHgYDVQQDDBdBVVRPUklEQUQgQ0VSVElGSUNBRE9SQTEuMCwGA1UECgwlU0VSVklDSU8gREUgQURNSU5JU1RSQUNJT04gVFJJQlVUQVJJQTEYMBYGA1UECwwPRElWSVNJT04gREUgU0FUMRcwFQYDVQQJDA5BViBISURBTEdPIDc3MQ4wDAYDVQQRDAUwNjMwMDELMAkGA1UEBhMCTVgxGTAXBgNVBAgMEENJVURBRCBERSBNRVhJQ08xETAPBgNVBAcMCENPWU9BQ0FOMRUwEwYJKoZIhvcNAQkBFgZzYXRAbXgwHhcNMjQwMTAxMDAwMDAwWhcNMjgxMjMxMjM1OTU5WjCBvDEmMCQGA1UEAxMdVkVMSU9OIERJR0lUQUwgU0EgREUgQ1YxJjAkBgNVBAoTHVZFTElPTiBESUdJVEFMIFNBIERFIENWMR4wHAYDVQQFExUgLyBYWFhYNjAxMDFYWFhYWFhYWFhYMA0GCSqGSIb3DQEBAQUAA4IBAQCaR8..."
     CondicionesDePago="PAGO EN UNA SOLA EXHIBICION"
-    SubTotal="100.00"
+    SubTotal="10.00"
     Descuento="0.00"
     Moneda="MXN"
     TipoCambio="1"
-    Total="116.00"
+    Total="11.60"
     TipoDeComprobante="I"
     Exportacion="01"
     MetodoPago="PUE"
@@ -42,18 +42,18 @@
             ClaveUnidad="E48" 
             Unidad="Servicio"
             Descripcion="Suscripción mensual Velion Premium - Acceso completo a plataforma de streaming con contenido exclusivo. Periodo: 30/10/2025 - 29/11/2025" 
-            ValorUnitario="100.00" 
-            Importe="100.00"
+            ValorUnitario="10.00" 
+            Importe="10.00"
             Descuento="0.00"
             ObjetoImp="02">
             <cfdi:Impuestos>
                 <cfdi:Traslados>
                     <cfdi:Traslado 
-                        Base="100.00" 
+                        Base="10.00" 
                         Impuesto="002" 
                         TipoFactor="Tasa" 
                         TasaOCuota="0.160000" 
-                        Importe="16.00"/>
+                        Importe="1.60"/>
                 </cfdi:Traslados>
             </cfdi:Impuestos>
         </cfdi:Concepto>
@@ -63,11 +63,11 @@
         TotalImpuestosTrasladados="16.00">
         <cfdi:Traslados>
             <cfdi:Traslado 
-                Base="100.00" 
+                Base="10.00" 
                 Impuesto="002" 
                 TipoFactor="Tasa" 
                 TasaOCuota="0.160000" 
-                Importe="16.00"/>
+                Importe="1.60"/>
         </cfdi:Traslados>
     </cfdi:Impuestos>
     

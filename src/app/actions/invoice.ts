@@ -5,7 +5,7 @@ import { invoiceFormSchema, type InvoiceFormInput } from '@/lib/validations/invo
 import { auth } from '@/lib/auth';
 import { generateCFDI } from '@/lib/cfdi-generator';
 import { generateInvoicePDF } from '@/lib/pdf-generator';
-import { writeFile, mkdir } from 'fs/promises';
+import { uploadStringToBlob, uploadBufferToBlob } from '@/lib/azure';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -88,7 +88,7 @@ export async function getUserFiscalData() {
 
 export async function generateInvoice(data: InvoiceFormInput) {
     const session = await auth();
-    
+
     if (!session?.user?.email) {
         return { error: 'No autenticado' };
     }
@@ -117,23 +117,28 @@ export async function generateInvoice(data: InvoiceFormInput) {
             select: { folio: true }
         });
 
-        const nextFolio = lastInvoice 
+        const nextFolio = lastInvoice
             ? String(parseInt(lastInvoice.folio) + 1).padStart(6, '0')
             : '000001';
 
         // Generar UUID único para el CFDI
         const uuid = uuidv4();
 
-        // Datos de ejemplo para la factura de demostración
-        const subtotal = 100.00;
-        const iva = subtotal * 0.16;
-        const total = subtotal + iva;
+        // Monto cobrado al cliente (por política de cuenta el mínimo es 10.00 MXN)
+        // Queremos que el TOTAL cobrado sea 10.00 (incluyendo IVA). Calculamos
+        // el subtotal y el IVA de manera que subtotal + iva === chargedTotal.
+        const chargedTotal = 10.00;
+        const subtotal = +(chargedTotal / 1.16).toFixed(2); // base antes de IVA
+        // Ajuste para evitar error por redondeo: recalculamos IVA y total
+        const iva = +(chargedTotal - subtotal).toFixed(2);
+        const total = +(subtotal + iva).toFixed(2); // debería ser equal chargedTotal
 
         const domicilio = `${validated.data.calle} ${validated.data.numeroExterior}${validated.data.numeroInterior ? ' Int. ' + validated.data.numeroInterior : ''}, ${validated.data.colonia}, ${validated.data.municipio}, ${validated.data.estado}, CP ${validated.data.codigoPostal}`;
 
-        // Crear directorio si no existe
-        const invoicesDir = join(process.cwd(), 'public', 'invoices');
-        await mkdir(invoicesDir, { recursive: true });
+        // Validación rápida de Azure (si falta, retornamos error informativo)
+        if (!process.env.AZURE_STORAGE_CONNECTION_STRING) {
+            return { error: 'AZURE_STORAGE_CONNECTION_STRING no está definida. Configura la conexión a Azure Storage.' };
+        }
 
         // Generar XML usando generador manual
         const xmlContent = generateCFDI({
@@ -154,13 +159,17 @@ export async function generateInvoice(data: InvoiceFormInput) {
             uuid,
         });
 
-    // Guardar XML
-    const xmlPath = join(invoicesDir, `${nextFolio}.xml`);
-    await writeFile(xmlPath, xmlContent, 'utf-8');
-    const xmlUrl = `/invoices/${nextFolio}.xml`;
+        // Subir XML directamente a Azure (siempre)
+        const xmlBlobName = `invoices/${nextFolio}.xml`;
+        let xmlUrl: string;
+        try {
+            xmlUrl = await uploadStringToBlob(xmlContent, xmlBlobName, 'application/xml');
+        } catch (e) {
+            console.error('Error subiendo XML a Azure:', e);
+            return { error: 'Error subiendo XML a Azure: ' + (e instanceof Error ? e.message : String(e)) };
+        }
 
-        // Crear la factura en la base de datos ANTES de generar el PDF
-        // Usamos pdfUrl local como placeholder; lo actualizaremos después.
+        // Crear la factura en la base de datos con el xmlUrl; pdfUrl se actualizará luego
         let invoice = await prisma.invoice.create({
             data: {
                 userId: user.id,
@@ -178,19 +187,17 @@ export async function generateInvoice(data: InvoiceFormInput) {
                 formaPago: validated.data.formaPago,
                 metodoPago: validated.data.metodoPago,
                 xmlUrl,
-                pdfUrl: `/invoices/${nextFolio}.pdf`,
+                pdfUrl: xmlUrl, // placeholder temporal
                 uuid,
                 status: 'issued',
             }
         });
 
-        // Generar PDF usando generador manual (primera pasada: placeholder para subir y obtener fileId)
-        const pdfPath = join(invoicesDir, `${nextFolio}.pdf`);
-        // URL pública de verificación que usará el QR
+        // Generar PDF en memoria
         const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
         const verifyUrl = `${baseUrl}/invoices/verify/${uuid}`;
 
-        const initialPdfBuffer = await generateInvoicePDF({
+        const pdfBuffer = await generateInvoicePDF({
             folio: nextFolio,
             serie: 'A',
             uuid,
@@ -206,24 +213,17 @@ export async function generateInvoice(data: InvoiceFormInput) {
             subtotal,
             iva,
             total,
-        }, pdfPath, verifyUrl);
+        }, `${nextFolio}.pdf`, verifyUrl, false);
 
-        let pdfUrl = `/invoices/${nextFolio}.pdf`;
-        // Guardar localmente el PDF (ya lo escribió generateInvoicePDF en pdfPath)
-        // Actualizar el registro de la factura con la ruta local
+        // Subir PDF a Azure
+        const pdfBlobName = `invoices/${nextFolio}.pdf`;
+        let pdfUrl: string;
         try {
-            // Actualizamos la factura y reutilizamos el resultado retornado para evitar
-            // una consulta adicional a la base de datos.
+            pdfUrl = await uploadBufferToBlob(pdfBuffer, pdfBlobName, 'application/pdf');
             invoice = await prisma.invoice.update({ where: { id: invoice.id }, data: { pdfUrl } });
         } catch (e) {
-            console.warn('No se pudo actualizar invoice con pdfUrl local:', e);
-            // Si la actualización falla por alguna razón, intentamos recuperar el registro
-            // para no romper la respuesta. Esto es un fallback conservador.
-            const maybeInvoice = await prisma.invoice.findUnique({ where: { id: invoice.id } });
-            if (!maybeInvoice) {
-                throw new Error('No se pudo recuperar la factura después de crearla');
-            }
-            invoice = maybeInvoice;
+            console.error('Error subiendo PDF a Azure:', e);
+            return { error: 'Error subiendo PDF a Azure: ' + (e instanceof Error ? e.message : String(e)) };
         }
 
         // Convertir Decimal a number para que Next.js pueda serializar
@@ -234,12 +234,14 @@ export async function generateInvoice(data: InvoiceFormInput) {
             total: Number(invoice.total),
         };
 
-        return { 
-            success: true, 
+        return {
+            success: true,
             message: 'Factura generada correctamente',
             invoice: invoiceData,
             xmlUrl,
             pdfUrl,
+            xmlStorage: 'azure',
+            pdfStorage: 'azure',
         };
     } catch (error) {
         console.error('Error al generar factura:', error);

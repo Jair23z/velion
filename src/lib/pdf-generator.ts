@@ -20,7 +20,7 @@ interface InvoiceData {
     total: number;
 }
 
-export async function generateInvoicePDF(data: InvoiceData, outputPath: string, qrText?: string): Promise<Buffer> {
+export async function generateInvoicePDF(data: InvoiceData, outputPath: string, qrText?: string, writeToDisk = true): Promise<Buffer> {
     // Crear un nuevo documento PDF
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage([612, 792]); // Tamaño carta
@@ -277,10 +277,13 @@ export async function generateInvoicePDF(data: InvoiceData, outputPath: string, 
         color: gray,
     });
 
-    // Guardar PDF
+    // Guardar PDF bytes
     const pdfBytes = await pdfDoc.save();
-    // Guardar en disco (compatibilidad con el flujo existente)
-    await writeFile(outputPath, pdfBytes);
+
+    // Si se solicita, escribir en disco (compatibilidad con el flujo existente)
+    if (writeToDisk) {
+        await writeFile(outputPath, pdfBytes);
+    }
 
     // Devolver Buffer para que el llamador pueda subir/actualizar en Drive
     return Buffer.from(pdfBytes);

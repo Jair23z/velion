@@ -6,18 +6,15 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    console.log('📬 Webhook recibido de OpenPay:', JSON.stringify(body, null, 2));
 
     // Verificar que sea una notificación de cargo
     if (body.type !== 'charge.succeeded') {
-      console.log('⚠️ Evento ignorado:', body.type);
       return NextResponse.json({ received: true });
     }
 
     const transaction = body.transaction;
     const openpayOrderId = transaction.id;
 
-    console.log('💰 Cargo exitoso recibido:', openpayOrderId);
 
     // Buscar la suscripción pendiente
     const subscription = await prisma.subscription.findFirst({
@@ -39,7 +36,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('✅ Suscripción encontrada:', subscription.id);
 
     // Calcular fechas de activación
     const startDate = new Date();
@@ -56,7 +52,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log('🎉 Suscripción activada:', subscription.id);
 
     // Enviar email de confirmación al usuario
     try {
@@ -104,7 +99,6 @@ export async function POST(request: NextRequest) {
         `,
       });
 
-      console.log('📧 Email enviado a:', subscription.user.email);
     } catch (emailError) {
       console.error('❌ Error enviando email:', emailError);
       // No fallar el webhook si el email falla

@@ -76,7 +76,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     ],
     callbacks: {
         async jwt({ token, user, trigger, session }) {
-            console.log('🔧 JWT Callback ejecutado - Trigger:', trigger, '- User:', !!user, '- TokenID:', token.id);
             
             // Cuando el usuario se loguea por primera vez
             if (user) {
@@ -111,7 +110,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                     if (dbUser) {
                         const activeSubscription = dbUser.subscriptions[0];
-                        console.log('🔍 Verificando suscripción para:', dbUser.email, '- Premium:', !!activeSubscription);
                         
                         token.isPremium = !!activeSubscription;
                         token.subscriptionPlan = activeSubscription?.plan.name;

@@ -7,8 +7,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { paymentMethod, planId, userId, token, deviceSessionId } = body;
 
-    console.log('📝 Datos recibidos:', { paymentMethod, planId, userId, hasToken: !!token });
-
     // Validar datos requeridos
     if (!planId || !userId) {
       return NextResponse.json(
@@ -30,15 +28,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('✅ Plan encontrado:', plan.name);
-
     // Obtener el usuario
     const user = await prisma.user.findUnique({
       where: { id: userId },
     });
 
-    console.log('🔍 Buscando usuario con ID:', userId);
-    console.log('👤 Usuario encontrado:', user ? user.email : 'NO ENCONTRADO');
+   
 
     if (!user) {
       return NextResponse.json(
@@ -50,7 +45,6 @@ export async function POST(request: NextRequest) {
     if (paymentMethod === 'card') {
       // Procesar pago con tarjeta usando token de OpenPay
       
-      console.log('💳 Creando cargo con token de OpenPay');
       
       const chargeRequest = {
         source_id: token,
@@ -73,7 +67,6 @@ export async function POST(request: NextRequest) {
             console.error('❌ Error de OpenPay:', error);
             reject(error);
           } else {
-            console.log('✅ Cargo exitoso:', body.id);
             resolve(body);
           }
         });
@@ -101,8 +94,6 @@ export async function POST(request: NextRequest) {
           invoiceNumber,
         },
       });
-
-      console.log('✅ Suscripción creada:', subscription.id);
       
       // IMPORTANTE: Invalidar el JWT actual para forzar recarga en el siguiente request
       // Esto se hace automáticamente porque al crear la suscripción,

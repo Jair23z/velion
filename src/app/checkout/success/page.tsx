@@ -5,31 +5,34 @@ import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
 import ReloadButton from '@/components/ReloadButton';
 
-export default async function CheckoutSuccessPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ subscriptionId?: string }>;
-}) {
+export default async function CheckoutSuccessPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>>; }) {
   const session = await auth();
-  const { subscriptionId } = await searchParams;
+  const params = await searchParams;
+  const subscriptionIdParam = params?.subscriptionId;
 
   if (!session?.user?.id) {
     redirect('/login');
   }
 
-  if (!subscriptionId) {
-    redirect('/');
+  let subscription = null;
+
+  if (subscriptionIdParam) {
+    subscription = await prisma.subscription.findUnique({ where: { id: subscriptionIdParam }, include: { plan: true } });
   }
 
-  // Obtener detalles de la suscripción
-  const subscription = await prisma.subscription.findUnique({
-    where: { id: subscriptionId },
-    include: {
-      plan: true,
-    },
-  });
+  // If we don't have a subscription but we received a payment_intent param,
+  // render a client-side poller that waits for the webhook to create the subscription.
+  const paymentIntentParam = params?.payment_intent || params?.payment_intent_client_secret;
+  if (!subscription && !subscriptionIdParam && paymentIntentParam) {
+    // Render a client component that will poll for the subscription
+    const SubscriptionPoller = (await import('@/components/SubscriptionPoller')).default;
+    return (
+      // @ts-ignore server -> client component
+      <SubscriptionPoller paymentIntentId={String(paymentIntentParam)} />
+    );
+  }
 
-  if (!subscription || subscription.userId !== session.user.id) {
+  if (!subscription) {
     redirect('/');
   }
 

@@ -37,6 +37,7 @@ export default async function CheckoutPage() {
   const plan = await prisma.subscriptionPlan.findUnique({
     where: { name: 'Premium' },
   });
+console.log(plan);
 
   if (!plan) {
     redirect('/?error=Plan no encontrado');

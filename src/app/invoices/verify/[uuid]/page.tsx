@@ -82,9 +82,7 @@ export default async function InvoiceVerifyPage({ params }: Props) {
                             <div className="mt-2 flex flex-col gap-2">
                                 {invoice.pdfUrl && (
                                     <a
-                                        href={invoice.pdfUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
+                                        href={`/api/invoices/download?name=${encodeURIComponent(String(invoice.pdfUrl))}`}
                                         className="inline-flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium text-white bg-teal-600 hover:bg-teal-700"
                                     >
                                         Descargar PDF
@@ -92,9 +90,7 @@ export default async function InvoiceVerifyPage({ params }: Props) {
                                 )}
                                 {invoice.xmlUrl && (
                                     <a
-                                        href={invoice.xmlUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
+                                        href={`/api/invoices/download?name=${encodeURIComponent(String(invoice.xmlUrl))}`}
                                         className="inline-flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-100"
                                     >
                                         Descargar XML
