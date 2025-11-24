@@ -121,8 +121,6 @@ export default function Header() {
                   aria-haspopup="true"
                   aria-expanded={isProfileOpen}
                   onClick={() => setIsProfileOpen((s) => !s)}
-                  onMouseEnter={() => setIsProfileOpen(true)}
-                  onMouseLeave={() => setIsProfileOpen(false)}
                   className="flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-800 transition"
                 >
                   {session.user.image ? (
