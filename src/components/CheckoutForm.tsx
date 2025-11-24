@@ -119,17 +119,7 @@ export default function CheckoutForm({ plan, userEmail, userId }: CheckoutFormPr
           <div className="font-semibold">Tarjeta</div>
           <div className="text-xs mt-1">Débito o Crédito</div>
         </button>
-        <button
-          onClick={() => setPaymentMethod('oxxo')}
-          className={`flex-1 py-3 px-4 rounded-lg border-2 transition-colors ${
-            paymentMethod === 'oxxo'
-              ? 'border-green-500 bg-green-500/10 text-white'
-              : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600'
-          }`}
-        >
-          <div className="font-semibold">OXXO</div>
-          <div className="text-xs mt-1">Efectivo</div>
-        </button>
+
       </div>
 
       <div className="space-y-4">
