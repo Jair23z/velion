@@ -56,10 +56,13 @@ export async function GET(request: NextRequest) {
     const downloadBuffer = await blobClient.downloadToBuffer();
 
     const filename = path.basename(blobName);
-    const headers = {
-      'Content-Type': 'application/pdf',
+    const headers: Record<string, string> = {
+      'Content-Type': contentType,
       'Content-Disposition': `attachment; filename="${filename}"`,
     };
+    if (typeof props.contentLength === 'number' || typeof props.contentLength === 'string') {
+      headers['Content-Length'] = String(props.contentLength);
+    }
 
     // Buffer no es BodyInit en TS/Web API; convertir a Uint8Array para la Response
     const uint8 = new Uint8Array(downloadBuffer);

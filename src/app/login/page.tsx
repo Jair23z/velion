@@ -82,7 +82,7 @@ export default function LoginPage() {
               className="w-full bg-gray-800 border-gray-700 border p-1.5 rounded-sm text-sm pl-3 mt-3 text-gray-100 focus:outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/50"
               type="email"
               id="email"
-              placeholder="jair121sp@gmail.com"
+              placeholder="Email"
               {...register("email")}
             />
             {errors.email && (
