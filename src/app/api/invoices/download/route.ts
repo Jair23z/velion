@@ -56,12 +56,14 @@ export async function GET(request: NextRequest) {
     const downloadBuffer = await blobClient.downloadToBuffer();
 
     const filename = path.basename(blobName);
-    const headers: Record<string, string> = {
-      'Content-Type': contentType,
+    const headers = {
+      'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename="${filename}"`,
     };
 
-    return new Response(downloadBuffer, { status: 200, headers });
+    // Buffer no es BodyInit en TS/Web API; convertir a Uint8Array para la Response
+    const uint8 = new Uint8Array(downloadBuffer);
+    return new Response(uint8, { status: 200, headers });
   } catch (error: any) {
     console.error('Error en /api/invoices/download:', error);
     return NextResponse.json({ error: error.message || 'Error desconocido' }, { status: 500 });
