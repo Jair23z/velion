@@ -5,7 +5,7 @@ if (!secret) {
   console.warn('STRIPE_SECRET_KEY no está configurada. Configura la variable de entorno para usar Stripe.');
 }
 
-const stripe = new Stripe(secret || '', { apiVersion: '2022-11-15' });
+const stripe = new Stripe(secret || '');
 
 export async function createCheckoutSession(params: {
   lineItems: Array<{ price_data?: any; price?: string; quantity?: number }>,
