@@ -1,8 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import stripe from '@/lib/stripe';
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
     // Verificar autenticación
     const session = await auth();
@@ -12,6 +13,10 @@ export async function POST() {
         { status: 401 }
       );
     }
+
+    // Obtener feedback del body
+    const body = await request.json();
+    const { reason, feedback } = body;
 
     // Buscar la suscripción activa del usuario
     const activeSubscription = await prisma.subscription.findFirst({
@@ -34,27 +39,58 @@ export async function POST() {
       );
     }
 
-    // Cancelar la suscripción
-    // La suscripción permanece activa hasta la fecha de finalización
+    // Procesar reembolso si hay un PaymentIntent asociado
+    let refundId = null;
+    if (activeSubscription.openpayOrderId) {
+      try {
+        // Intentar procesar reembolso en Stripe
+        const refund = await stripe.refunds.create({
+          payment_intent: activeSubscription.openpayOrderId,
+          reason: 'requested_by_customer',
+          metadata: {
+            subscriptionId: activeSubscription.id,
+            userId: session.user.id,
+            cancellationReason: reason || 'No especificado',
+          },
+        });
+        refundId = refund.id;
+        console.log('[subscription/cancel] Refund created:', refundId);
+      } catch (refundError: any) {
+        console.error('[subscription/cancel] Error creating refund:', refundError);
+        // Si el reembolso falla, aún cancelamos la suscripción pero no la marcamos como refunded
+        // El usuario puede contactar soporte para resolverlo
+      }
+    }
+
+    // Cancelar la suscripción y guardar feedback
+    const now = new Date();
     await prisma.subscription.update({
       where: { id: activeSubscription.id },
       data: { 
-        status: 'cancelled',
-        updatedAt: new Date(),
+        status: refundId ? 'refunded' : 'cancelled',
+        cancelledAt: now,
+        cancellationReason: reason,
+        cancellationFeedback: feedback || null,
+        refundId: refundId,
+        refundedAt: refundId ? now : null,
+        updatedAt: now,
       },
     });
 
     return NextResponse.json({
       success: true,
-      message: 'Suscripción cancelada. Tendrás acceso hasta ' + 
-               activeSubscription.endDate.toLocaleDateString('es-MX', {
-                 year: 'numeric',
-                 month: 'long',
-                 day: 'numeric',
-               }),
+      refunded: !!refundId,
+      message: refundId 
+        ? 'Suscripción cancelada y reembolso procesado. El dinero aparecerá en tu cuenta en 5-10 días hábiles.'
+        : 'Suscripción cancelada. Tendrás acceso hasta ' + 
+          activeSubscription.endDate.toLocaleDateString('es-MX', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
     });
   } catch (error: any) {
-    console.error('Error canceling subscription:', error);
+    console.error('[subscription/cancel] Error:', error);
     return NextResponse.json(
       { error: error.message || 'Error al cancelar la suscripción' },
       { status: 500 }

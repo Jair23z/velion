@@ -22,7 +22,7 @@ export default async function MiCuentaPage() {
     include: {
       subscriptions: {
         where: {
-          OR: [{ status: "active" }, { status: "cancelled" }],
+          OR: [{ status: "active" }, { status: "cancelled" }, { status: "refunded" }],
           endDate: {
             gte: new Date(),
           },
@@ -46,6 +46,7 @@ export default async function MiCuentaPage() {
   const hasActiveSubscriptions =
     activeSubscription && activeSubscription.plan.isActive;
   const isCancelled = activeSubscription?.status === "cancelled";
+  const isRefunded = activeSubscription?.status === "refunded";
 
   return (
     <div className="min-h-screen bg-gray-950">
@@ -149,20 +150,58 @@ export default async function MiCuentaPage() {
                 </div>
                 <div
                   className={`px-4 py-2 rounded-full ${
-                    isCancelled ? "bg-yellow-500/10" : "bg-green-500/10"
+                    isRefunded ? "bg-blue-500/10" : isCancelled ? "bg-yellow-500/10" : "bg-green-500/10"
                   }`}
                 >
                   <span
                     className={`font-semibold ${
-                      isCancelled ? "text-yellow-500" : "text-green-500"
+                      isRefunded ? "text-blue-500" : isCancelled ? "text-yellow-500" : "text-green-500"
                     }`}
                   >
-                    {isCancelled ? "Cancelada" : "Activo"}
+                    {isRefunded ? "Reembolsada" : isCancelled ? "Cancelada" : "Activo"}
                   </span>
                 </div>
               </div>
 
-              {isCancelled && (
+              {isRefunded && (
+                <div className="bg-blue-900/20 border border-blue-800 rounded-lg p-4">
+                  <div className="flex gap-3">
+                    <svg
+                      className="w-6 h-6 text-blue-500 shrink-0"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <div>
+                      <h4 className="text-white font-semibold mb-1">
+                        Reembolso procesado
+                      </h4>
+                      <p className="text-sm text-gray-300">
+                        Tu suscripción fue cancelada y el reembolso completo ha sido procesado.{" "}
+                        <span className="font-semibold text-blue-400">
+                          El dinero aparecerá en tu cuenta bancaria en 5 a 10 días hábiles.
+                        </span>
+                        {" "}Tu acceso al contenido premium finalizó el{" "}
+                        {new Date(
+                          activeSubscription.cancelledAt || activeSubscription.endDate
+                        ).toLocaleDateString("es-MX", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                        .
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {isCancelled && !isRefunded && (
                 <div className="bg-yellow-900/20 border border-yellow-800 rounded-lg p-4">
                   <div className="flex gap-3">
                     <svg
@@ -311,7 +350,7 @@ export default async function MiCuentaPage() {
               </div>
 
               {/* Botón de cancelar suscripción */}
-              {!isCancelled && (
+              {!isCancelled && !isRefunded && (
                 <div className="pt-4 border-t border-gray-800">
                   <CancelSubscriptionButton />
                 </div>

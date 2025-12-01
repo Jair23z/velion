@@ -197,7 +197,7 @@ model Subscription {
   userId String
   planId String
 
-  status    String   @default("active") // "active", "cancelled", "expired", "pending"
+  status    String   @default("active") // "active", "cancelled", "expired", "pending", "refunded"
   startDate DateTime @default(now())
   endDate   DateTime // Fecha de expiración
 
@@ -208,6 +208,13 @@ model Subscription {
   // Datos para facturación
   invoiceNumber String? @unique // Folio único para facturar esta suscripción
   invoiceIssued Boolean @default(false) // Si ya se generó factura
+
+  // Datos de cancelación/reembolso
+  cancellationReason String? @db.Text // Razón de cancelación proporcionada por el usuario
+  cancellationFeedback String? @db.Text // Comentarios adicionales del usuario
+  cancelledAt DateTime? // Fecha de cancelación
+  refundId String? // ID del refund en Stripe
+  refundedAt DateTime? // Fecha del reembolso
 
   // Relación con factura
   purchaseId String? @unique

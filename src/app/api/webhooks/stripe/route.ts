@@ -130,6 +130,37 @@ export async function POST(request: NextRequest) {
         }
         break;
       }
+      case 'charge.refunded': {
+        const charge = event.data.object as any;
+        try {
+          console.log('[webhook] charge.refunded received', { chargeId: charge.id, paymentIntent: charge.payment_intent });
+
+          // Buscar la suscripción por PaymentIntent ID
+          const subscription = await prisma.subscription.findFirst({
+            where: { openpayOrderId: String(charge.payment_intent) }
+          });
+
+          if (subscription) {
+            // Actualizar suscripción con datos del reembolso
+            const now = new Date();
+            await prisma.subscription.update({
+              where: { id: subscription.id },
+              data: {
+                status: 'refunded',
+                refundedAt: now,
+                refundId: charge.refunds?.data?.[0]?.id || null,
+                updatedAt: now,
+              }
+            });
+            console.log('[webhook] Subscription marked as refunded', { subscriptionId: subscription.id });
+          } else {
+            console.warn('[webhook] No subscription found for refunded charge', { paymentIntent: charge.payment_intent });
+          }
+        } catch (e) {
+          console.error('[webhook] Error handling charge.refunded:', e);
+        }
+        break;
+      }
       default:
     }
 
