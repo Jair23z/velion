@@ -48,10 +48,10 @@ export default function CancelSubscriptionButton() {
         throw new Error(data.error || 'Error al cancelar la suscripción');
       }
 
-      // Cerrar modal y redirigir a home para forzar actualización completa
+      // Cerrar modal y redirigir a home con recarga completa para evitar caché
       setShowConfirmModal(false);
-      router.push('/');
-      router.refresh();
+      // Usar window.location para forzar recarga completa sin caché
+      window.location.href = '/';
     } catch (err: any) {
       console.error('Error canceling subscription:', err);
       setError(err.message || 'Error al cancelar la suscripción');

@@ -23,12 +23,9 @@ export default async function MiCuentaPage() {
       subscriptions: {
         where: {
           OR: [{ status: "active" }, { status: "cancelled" }, { status: "refunded" }],
-          endDate: {
-            gte: new Date(),
-          },
         },
         orderBy: {
-          endDate: "desc",
+          createdAt: "desc", // Más reciente primero
         },
         take: 1,
         include: {
@@ -44,7 +41,7 @@ export default async function MiCuentaPage() {
 
   const activeSubscription = user.subscriptions[0];
   const hasActiveSubscriptions =
-    activeSubscription && activeSubscription.plan.isActive;
+    activeSubscription && activeSubscription.plan.isActive && new Date(activeSubscription.endDate) >= new Date();
   const isCancelled = activeSubscription?.status === "cancelled";
   const isRefunded = activeSubscription?.status === "refunded";
 
